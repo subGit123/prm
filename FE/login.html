@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login page</title>
+    <style>
+      h1 {
+        color: burlywood;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      button {
+        background-color: cadetblue;
+        border-radius: 10px;
+        width: 100px;
+        height: 30px;
+      }
+
+      .login_input {
+        font-size: 25px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🔒Login</h1>
+    <form>
+      ID : <input type="text" required class="login_input" />
+      <br />
+      PW : <input type="password" required class="login_input" />
+      <br />
+      <button>🔓Login</button>
+    </form>
+  </body>
+</html>
