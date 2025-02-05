@@ -1,5 +1,9 @@
 # 테니스 마켓
 
+### 아키텍처
+
+<img src='./img/flowChart.png'>
+
 ---
 
 ### NodeJS + DB 연동
