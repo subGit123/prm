@@ -33,7 +33,7 @@ db.set(id, youtuber1);
 db.set(++id, youtuber2);
 db.set(++id, youtuber3);
 
-// REST API 설계
+// REST API 설계 ===============GET=======================
 app.get('/youtubers/:id', (req, res) => {
   let {id} = req.params;
   id = Number(id);
@@ -51,7 +51,16 @@ app.get('/youtubers/:id', (req, res) => {
 // req : x
 // res :
 app.get('/youtubers', (req, res) => {
-  const showData = Array.from(db);
+  // 가독성 면에서 좋지 않지만 변환 과정은 없기 때문에 메모리 사용이 적음
+  // var youtubers ={}
+  // db.forEach((youtubers) => {
+  //   youtubers[key] = youtubers
+  // });
+
+  // JSON.stringify(youtubers)
+
+  //가독성 면에서 좋음 (하지만 변환을 하기 때문에 메모리를 많이 사용)
+  const showData = Array.from(db.values());
   res.json(showData);
 });
 
@@ -64,6 +73,8 @@ app.get('/youtubers', (req, res) => {
 // req : body (channelTitle, sub = 0, vidoNum = 0,)
 // res : channelTitle을 이용한 message 보내기
 
+// ================POST=======================
+
 app.post('/youtubers', (req, res) => {
   let data = req.body;
   console.log(data);
@@ -72,4 +83,80 @@ app.post('/youtubers', (req, res) => {
   res.json({
     message: `${db.get(id).channelTitle}님 유튜버 생활을 응원합니다`,
   });
+});
+
+// ================DELETE=======================
+
+// 개별 삭제 Delete url : /youtubers/:id
+// req : params.id
+// res : 메시지 남기기
+
+app.delete('/youtubers/:id', (req, res) => {
+  let {id} = req.params;
+  id = Number(id);
+
+  let youtuber = db.get(id);
+  if (youtuber === undefined) {
+    res.json({
+      message: `요청하신 ${id}는 없습니다`,
+    });
+  } else {
+    const name = youtuber.channelTitle;
+    db.delete(id);
+
+    res.json({
+      message: `${name}님 언제든 돌아오세요😁😁`,
+    });
+  }
+});
+
+// 전체 삭제 DELETE/youtubers
+// - req : X
+// - res : 메시지 남기기
+
+app.delete('/youtubers', (req, res) => {
+  var msg = '';
+
+  if (db.length > 0) {
+    //db.size >= 1
+    db.clear();
+    msg = '남아있는 유튜버가 없습니다';
+
+    res.json({
+      message: msg,
+    });
+  } else {
+    msg = '삭제할 유튜버가 없습니다';
+    res.json({
+      message: msg,
+    });
+  }
+});
+
+// ================PUT=======================
+
+// 개별 수정
+// -req : id , body (channelTitle)
+// -res : 메시지
+
+app.put('/youtubers/:id', (req, res) => {
+  let {id} = req.params;
+  id = Number(id);
+  let youtuber = db.get(id);
+  var oldTitle = youtuber.channelTitle;
+
+  if (youtuber == undefined) {
+    res.json({
+      message: `해당하는 ${youtuber}정보가 존재하지 않습니다.`,
+    });
+  } else {
+    const data = req.body.channelTitle;
+
+    youtuber.channelTitle = data; //수정된 타이틀
+    db.set(id, youtuber);
+
+    res.json({
+      message: `${oldTitle}님 ${data}로 변경되었습니다.`,
+    });
+  }
 });
