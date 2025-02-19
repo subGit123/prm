@@ -1,26 +1,46 @@
 const express = require('express');
-// const {book} = require('./object-demo');
-const app = express(); //서버를 담아둠
+const app = express();
+const port = 3000;
 
-let book = {
-  title: 'NodeJS를 배워보자',
-  price: 20000,
-  des: '이 책 왜 좋음??',
-};
-
-// 서버 세팅 : 포트 넘버
-app.listen(3000, () => {
-  console.log('서버 실행 중...');
+app.listen(port, () => {
+  console.log(`서버 실행 중...http://localhost/${port}`);
 });
 
-// =================API======================
+const fruits = [
+  {
+    id: 1,
+    name: 'apple',
+  },
+  {
+    id: 2,
+    name: 'orange',
+  },
+  {
+    id: 3,
+    name: 'strawberry',
+  },
+  {
+    id: 4,
+    name: 'blueberry',
+  },
+];
 
-// GET 메소드로 '/' 요청이 오면
-// 매개변수로 전달받은 콜백함수('hello express')를 호출함
-app.get('/', function (req, res) {
-  res.send('hello express');
+// 과일 전체 조회
+app.get('/fruits', (req, res) => {
+  res.json(fruits);
 });
 
-app.get('/products/1', (req, res) => {
-  res.json(book.title);
+// 과일 개별 조회
+app.get('/fruits/:id', (req, res) => {
+  let id = req.params.id;
+
+  // const data = fruits[id - 1]
+  const data = fruits.find(v => v.id == id);
+
+  if (!data) {
+    res.status(404).json({
+      message: '찾으시는 id의 과일이 없습니다',
+    });
+  }
+  res.json(data);
 });

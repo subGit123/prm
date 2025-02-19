@@ -40,8 +40,8 @@ app.get('/youtubers/:id', (req, res) => {
 
   const youtuber = db.get(id);
 
-  if (youtuber === undefined) {
-    res.json({message: '없습니다'});
+  if (youtuber == undefined) {
+    res.status(404).json({message: '없습니다'});
   } else {
     res.json(youtuber);
   }
@@ -61,7 +61,14 @@ app.get('/youtubers', (req, res) => {
 
   //가독성 면에서 좋음 (하지만 변환을 하기 때문에 메모리를 많이 사용)
   const showData = Array.from(db.values());
-  res.json(showData);
+
+  if (showData.length > 0) {
+    res.json(showData);
+  } else {
+    res.status(404).json({
+      message: '유튜버가 없습니다😢',
+    });
+  }
 });
 
 // post를 이용해서 유튜버 (data) 추가해보기!!
@@ -77,12 +84,19 @@ app.get('/youtubers', (req, res) => {
 
 app.post('/youtubers', (req, res) => {
   let data = req.body;
-  console.log(data);
 
-  db.set(++id, data);
-  res.json({
-    message: `${db.get(id).channelTitle}님 유튜버 생활을 응원합니다`,
-  });
+  //body값(title) 확인 후 예외 처리하기
+  const channelTitle = req.body.channelTitle;
+  if (channelTitle) {
+    db.set(++id, data);
+    res.status(201).json({
+      message: `${db.get(id).channelTitle}님 유튜버 생활을 응원합니다`,
+    });
+  } else {
+    res.status(400).json({
+      message: '🚧형식을 잘 맞쳐주세요🚧',
+    });
+  }
 });
 
 // ================DELETE=======================
@@ -96,16 +110,16 @@ app.delete('/youtubers/:id', (req, res) => {
   id = Number(id);
 
   let youtuber = db.get(id);
-  if (youtuber === undefined) {
-    res.json({
-      message: `요청하신 ${id}는 없습니다`,
-    });
-  } else {
+  if (youtuber) {
     const name = youtuber.channelTitle;
     db.delete(id);
 
     res.json({
       message: `${name}님 언제든 돌아오세요😁😁`,
+    });
+  } else {
+    res.status(404).json({
+      message: `요청하신 ${id}는 없습니다`,
     });
   }
 });
@@ -117,17 +131,17 @@ app.delete('/youtubers/:id', (req, res) => {
 app.delete('/youtubers', (req, res) => {
   var msg = '';
 
-  if (db.length > 0) {
+  if (db.size > 0) {
     //db.size >= 1
     db.clear();
-    msg = '남아있는 유튜버가 없습니다';
+    msg = '유튜버가 전부 삭제되었습니다';
 
     res.json({
       message: msg,
     });
   } else {
     msg = '삭제할 유튜버가 없습니다';
-    res.json({
+    res.status(404).json({
       message: msg,
     });
   }
@@ -155,7 +169,7 @@ app.put('/youtubers/:id', (req, res) => {
     youtuber.channelTitle = data; //수정된 타이틀
     db.set(id, youtuber);
 
-    res.json({
+    res.status(404).json({
       message: `${oldTitle}님 ${data}로 변경되었습니다.`,
     });
   }
