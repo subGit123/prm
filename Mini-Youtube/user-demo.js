@@ -11,14 +11,71 @@ app.listen(port, () => {
 
 let db = new Map();
 var id = 0;
+
+// {
+//     "userId" : " cat",
+//     "pw" : 1234,
+//     "name" : "고양이이"
+//   }
+//   {
+//     "userId" : " 79blog",
+//     "pw" : 1234,
+//     "name" : "칠구 블로그"
+//   }
 // ================= API 설계 ===================
 
 // 로그인
 app.post('/login', (req, res) => {
-  res.json({
-    hi: 'hi',
+  const {userId, pw} = req.body;
+
+  // userId와 pw가 맞는지 확인
+  db.forEach((v, i) => {
+    if (v.userId == userId && v.pw == pw)
+      res.status(201).json({
+        message: `${userId}님 어서오세요 ㅎㅎ`,
+      });
+    else if (v.userId != userId) {
+      res.status(404).json({
+        message: `ID를 다시 확인해주세요`,
+      });
+    } else {
+      res.status(404).json({
+        message: `pw 다시 확인해주세요`,
+      });
+    }
   });
 });
+// 객체가 빈 걸로 확인하는 방법====================
+//   let loginData = {};
+
+//   // 사용자 찾기
+//   db.forEach(v => {
+//     if (v.userId === userId) {
+//       loginData = v;
+//     }
+//   });
+
+//   if (!isEmpty(loginData)) {
+//     console.log('아이디 맞음');
+
+//     //pw
+//     if (loginData.pw === pw) {
+//       console.log('비밀번호 맞다');
+//     } else {
+//       console.log('비밀번호 아니다');
+//     }
+//   } else {
+//     console.log('입력하신 아이디는 없습니다.');
+//   }
+// });
+
+// const isEmpty = obj => {
+//   if (Object.keys(obj).length === 0) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// };
 
 // 회원가입
 app.post('/signup', (req, res) => {

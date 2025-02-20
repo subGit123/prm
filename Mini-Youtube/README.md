@@ -48,11 +48,25 @@ pw 입력란
 id 데이터
 이름 데이터
 
+채널 관리(버튼)
+
 회원탈퇴
 
 ---
 
+[채널]
+
+채널 생성 페이지 (채널 등록 POST)
+
+채널 관리 페이지 (회원 전체 채널 조회 GET + 개별 채널 삭제 DELETE)
+
+채널 수정 페이지 (회원 개별 채널 조회 및 수정 GET + put )
+
+---
+
 API 설계
+
+[회원]
 
 로그인) POST/login
 
@@ -79,3 +93,35 @@ DELETE
 - req : id , name
 - res : (성공시)로그인 페이지로 이동
   (실패시)메시지
+
+[채널]
+
+- 채널 생성 POST/channels
+
+  - req.body : channelTitle
+  - res : 201(성공시)채널 페이지로 이동
+    (실패시)메시지
+
+- 채널 (개별)수정 PUT/channels/:id
+
+  - req.body : (URL)id , body(channelTitle)
+  - res : 200(성공시)수정 되었다 메시지 (old) -> (new)
+    (실패시)메시지
+
+- 채널 (개별)삭제 DELETE/channels/:id
+
+  - req.body : id
+  - res : 200(성공시)메시지
+    (실패시)메시지
+
+- 채널 조회 GET/channels
+
+  - req : x
+  - res : 200(성공시)메시지
+    (실패시)메시지
+
+- 채널 (개별)조회 GET/channels/:id
+
+  - req.body : id
+  - res : 200(성공시) ${채널명}메시지
+    (실패시)메시지
