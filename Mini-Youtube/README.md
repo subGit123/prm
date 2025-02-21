@@ -70,35 +70,35 @@ API 설계
 
 로그인) POST/login
 
-- req.body : id , pw
-- res : (성공시)마이 페이지로 이동
+- req.body : userId , pw
+- res : (성공시) ${name} 님 환영합니다
   (실패시)메시지
 
 회원가입 ) POST/signup
 
-- req.body : id , pw , name
-- res : (성공시)로그인 페이지로 이동
+- req.body : userId , pw , name
+- res : (성공시) ${name} 님 환영합니다
   (실패시)메시지
 
 마이페이지 ) GET(DELETE)/users/:id
 
 GET
 
-- req : (URL)id , name
+- req : body(userId)
 - res : (성공시)회원 내용 출력
   (실패시)메시지
 
 DELETE
 
-- req : id , name
-- res : (성공시)로그인 페이지로 이동
+- req : body(userId)
+- res : (성공시) ${name} 님 그동안 감사했습니다.
   (실패시)메시지
 
 [채널]
 
 - 채널 생성 POST/channels
 
-  - req.body : channelTitle
+  - req : channelTitle (body) + userId body ( _JWT_)
   - res : 201(성공시)채널 페이지로 이동
     (실패시)메시지
 
@@ -116,7 +116,7 @@ DELETE
 
 - 채널 조회 GET/channels
 
-  - req : x
+  - req : body(userId)
   - res : 200(성공시)메시지
     (실패시)메시지
 
@@ -125,3 +125,21 @@ DELETE
   - req.body : id
   - res : 200(성공시) ${채널명}메시지
     (실패시)메시지
+
+---
+
+## erd 그려보기
+
+[회원 테이블]
+
+| user_id |  pw  | name |
+| :-----: | :--: | :--: |
+|  nani   | 1234 | 나니 |
+| procat  | 1234 | 냥이 |
+
+[채널 테이블]
+
+| id  | channel_title | user_id(회원 테이블) | sub_num | video_num |
+| :-: | :-----------: | :------------------: | :-----: | :-------: |
+|  1  | 사기치는냥이  |         nani         |         |           |
+|  2  |  달리는 냥이  |        procat        |         |           |

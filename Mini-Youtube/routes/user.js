@@ -1,11 +1,7 @@
 const express = require('express');
-const app = express();
-const port = 7777;
-app.use(express.json()); //미들웨어 설정 (외부 모듈을 사용하기 위함)
+const router = express.Router();
 
-app.listen(port, () => {
-  console.log(`http://localhost:${port}`);
-});
+router.use(express.json()); //미들웨어 설정 (외부 모듈을 사용하기 위함)
 
 // ================ DB seting==========================
 
@@ -25,7 +21,7 @@ var id = 0;
 // ================= API 설계 ===================
 
 // 로그인
-app.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
   const {userId, pw} = req.body;
 
   // userId와 pw가 맞는지 확인
@@ -78,15 +74,13 @@ app.post('/login', (req, res) => {
 // };
 
 // 회원가입
-app.post('/signup', (req, res) => {
-  db.set(++id, req.body);
+router.post('/signup', (req, res) => {
+  let {userId} = req.body;
+  db.set(userId, req.body);
 
-  const singupName = db.get(id).name;
-  const dbName = req.body.name;
-
-  if (singupName == dbName) {
+  if (userId) {
     res.status(201).json({
-      message: `${db.get(id).name}님 환영합니다`,
+      message: `${db.get(userId).name}님 환영합니다`,
     });
   } else {
     res.status(400).json({
@@ -97,23 +91,22 @@ app.post('/signup', (req, res) => {
 });
 
 // 마이페이지 + 회원 탈퇴
-app
-  .route('/users/:id')
+router
+  .route('/users')
 
   // 마이페이지
   .get((req, res) => {
-    let {id} = req.params;
-    id = Number(id);
-    const userData = db.get(id);
+    let {userId} = req.body;
+
+    const userData = db.get(userId);
 
     if (userData) {
       res.status(200).json({
         userId: `${userData.userId}`,
-        pw: `${userData.pw}`,
         name: `${userData.name}`,
       });
     } else {
-      res.status(401).json({
+      res.status(404).json({
         message: '해당하는 정보가 없어요 로그인을 다시 해주세요',
       });
     }
@@ -121,18 +114,19 @@ app
 
   //회원 탈퇴
   .delete((req, res) => {
-    let {id} = req.params;
-    id = Number(id);
-    const userData = db.get(id);
+    const {userId} = req.body;
+    const userData = db.get(userId);
 
     if (userData) {
-      db.delete(id);
+      db.delete(userId);
       res.status(200).json({
         message: `${userData.name}님 그동안 감사했습니다👍👍`,
       });
     } else {
-      res.status(401).json({
+      res.status(404).json({
         message: '해당하는 정보가 없어요 다시 확인해주세요',
       });
     }
   });
+
+module.exports = router;

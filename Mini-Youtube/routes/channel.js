@@ -1,22 +1,19 @@
 const express = require('express');
-const app = express();
-const port = 7777;
-app.use(express.json()); //미들웨어 설정 (외부 모듈을 사용하기 위함)
+const router = express.Router();
 
-app.listen(port, () => {
-  console.log(`http://localhost:${port}`);
-});
+router.use(express.json()); //미들웨어 설정 (외부 모듈을 사용하기 위함)
 
 let db = new Map();
 var id = 0;
 
 // 전체 부분
-app
-  .route('/channels')
+router
+  .route('/')
   // 채널 생성
   .post((req, res) => {
     if (req.body.channelTitle) {
-      db.set(++id, req.body);
+      let channelData = req.body;
+      db.set(++id, channelData);
 
       res
         .status(201)
@@ -28,23 +25,37 @@ app
 
   // 채널 전체 조회
   .get((req, res) => {
-    // let channels = {};
-    // db.forEach((v, k) => {
-    //   channels[k] = v;
-    // });
+    if (!db.size) {
+      return res.status(404).json({
+        message: Notmsg(),
+      });
+    }
+
+    let {userId} = req.body; // 회원 아이디
     let showData = Array.from(db.values());
-    if (db.size) {
+
+    // 1) userId가 제공되지 않은 경우
+    if (!userId) {
+      return res.status(404).json({
+        message: '로그인이 필요한 페이지 🥲🥲',
+      });
+    }
+
+    // 2) userId가 가진 채널이 있는지 확인
+    const userChannel = showData.find(channel => channel.userId === userId);
+
+    if (userChannel) {
       res.status(200).json(showData);
     } else {
-      res.status(400).json({
-        message: '조회되는 채널이 없습니다.',
+      res.status(404).json({
+        message: `${userId}라는 ${Notmsg}`,
       });
     }
   });
 
 // 개별 부분
-app
-  .route('/channels/:id')
+router
+  .route('/:id')
   // 채널 개별 수정
   .put((req, res) => {
     let {id} = req.params;
@@ -89,6 +100,13 @@ app
     if (channelData) {
       res.status(200).json(channelData);
     } else {
-      res.status(404).json({message: `조회되는 유튜버가 없습니다🥲🥲`});
+      Notmsg();
     }
   });
+
+//조회되지 않을 경우 메시지 모듈화
+const Notmsg = () => {
+  res.status(404).json({message: `조회되는 유튜버가 없습니다🥲🥲`});
+};
+
+module.exports = router;
