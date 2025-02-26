@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const conn = require('../db');
 
-router.use(express.json()); //미들웨어 설정 (외부 모듈을 사용하기 위함)
+router.use(express.json());
 
 let db = new Map();
 var id = 0;
