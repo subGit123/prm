@@ -40,7 +40,7 @@ router.post('/signup', (req, res) => {
       sql,
       [email, name, password, phone_number],
 
-      (err, result, fields) => {
+      (err, result) => {
         res.status(201).json({
           message: `${name}님 환영합니다.`,
         });

@@ -1,112 +1,197 @@
 const express = require('express');
 const router = express.Router();
 const conn = require('../db');
+const {body, param, validationResult} = require('express-validator');
 
 router.use(express.json());
 
-let db = new Map();
-var id = 0;
+const validation = (req, res) => {
+  const err = validationResult(req);
 
-// 전체 부분
+  if (!err.isEmpty()) {
+    return res.status(400).json(err.array());
+  }
+};
+
 router
   .route('/')
-  // 채널 생성
-  .post((req, res) => {
-    if (req.body.channelTitle) {
-      let channelData = req.body;
-      db.set(++id, channelData);
 
-      res
-        .status(201)
-        .json({message: `${db.get(id).channelTitle}님 채널을 응원합니다`});
-    } else {
-      res.status(404).json({message: '다시 입력해주세요'});
-    }
-  })
+  .post(
+    [
+      body('user_id')
+        .notEmpty()
+        .isInt()
+        .withMessage('user_id는 숫자로 입력해주세요'),
+      body('name')
+        .notEmpty()
+        .isString()
+        .withMessage('채널 이름은 문자로 입력해주세요'),
+      validation,
+    ],
 
-  // 채널 전체 조회
-  .get((req, res) => {
-    if (!db.size) {
-      return res.status(404).json({
-        message: Notmsg(),
-      });
-    }
+    (req, res) => {
+      const {name, user_id} = req.body;
+      let sql = `INSERT INTO channels (name , user_id) VALUES  (?,?) `;
 
-    let {userId} = req.body; // 회원 아이디
-    let showData = Array.from(db.values());
+      conn.query(
+        sql,
+        [name, user_id],
 
-    // 1) userId가 제공되지 않은 경우
-    if (!userId) {
-      return res.status(404).json({
-        message: '로그인이 필요한 페이지 🥲🥲',
-      });
-    }
+        (err, result) => {
+          if (err) {
+            return res.status(400).end();
+          }
+          if (result.affectedRows > 0) {
+            res.status(201).json({message: `${name}님 환영합니다 ㅎㅎ`});
+          } else {
+            Notmsg(res);
+          }
+        },
+      );
+    },
+  )
 
-    // 2) userId가 가진 채널이 있는지 확인
-    const userChannel = showData.find(channel => channel.userId === userId);
+  .get(
+    body('user_id')
+      .notEmpty()
+      .isInt()
+      .withMessage('user_id는 숫자로 입력해주세요'),
 
-    if (userChannel) {
-      res.status(200).json(showData);
-    } else {
-      res.status(404).json({
-        message: `${userId}라는 ${Notmsg}`,
-      });
-    }
-  });
+    (req, res) => {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(400).end();
+      }
+      let {user_id} = req.body;
 
-// 개별 부분
+      let sql = `SELECT *  FROM channels WHERE user_id = ? `;
+
+      conn.query(
+        sql,
+        user_id,
+
+        (err, result) => {
+          if (err) {
+            return res.status(400).end();
+          }
+          if (result.length) {
+            res.status(200).json(result);
+          } else {
+            Notmsg(res);
+          }
+        },
+      );
+    },
+  );
+
 router
   .route('/:id')
-  // 채널 개별 수정
-  .put((req, res) => {
-    let {id} = req.params;
-    id = Number(id);
-    let channelData = db.get(id);
-    let oldTitle = channelData.channelTitle;
+  .put(
+    [
+      param('id').notEmpty().withMessage('채널 id 필요'),
+      body('name').notEmpty().isString().withMessage('채널명 오류'),
+    ],
 
-    if (channelData) {
-      let updateTitle = req.body.channelTitle;
-      db.set(id, channelData);
+    (req, res) => {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(400).end();
+      }
 
-      res.status(200).json({
-        message: `${oldTitle} 👉 ${updateTitle}님으로 수정되었습니다❗❗`,
-      });
-    } else {
-      res.status(404).json({message: `수정할 수 있는 유튜버가 없습니다🥲🥲`});
-    }
-  })
+      let {id} = req.params;
+      id = parseInt(id);
+      let {name} = req.body;
 
-  // 채널 개별 삭제
-  .delete((req, res) => {
-    let {id} = req.params;
-    id = Number(id);
+      let sql = `UPDATE channels SET name = ? WHERE id = ? `;
+      let values = [name, id];
+      if (id) {
+        conn.query(
+          sql,
+          values,
 
-    let channelData = db.get(id);
-    if (channelData) {
-      db.clear();
-      res
-        .status(200)
-        .json({message: `${channelData.channelTitle}님 그동안 감사했습니다`});
-    } else {
-      res.status(404).json({message: `삭제할 수 있는 유튜버가 없습니다🥲🥲`});
-    }
-  })
+          (err, result) => {
+            if (err) {
+              return res.status(400).end();
+            }
+            if (result.affectedRows > 0) {
+              res.status(200).json({
+                message: `${name}로 변경되었습니다`,
+              });
+            } else {
+              Notmsg(res);
+            }
+          },
+        );
+      }
+    },
+  )
 
-  // 채널 개별 조회
-  .get((req, res) => {
-    let {id} = req.params;
-    id = Number(id);
+  .delete(
+    param('id').notEmpty().isInt().withMessage('아이디 오류'),
+    (req, res) => {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(400).end();
+      }
 
-    let channelData = db.get(id);
-    if (channelData) {
-      res.status(200).json(channelData);
-    } else {
-      Notmsg();
-    }
-  });
+      let {id} = req.params;
+      id = Number(id);
 
-//조회되지 않을 경우 메시지 모듈화
-const Notmsg = () => {
+      if (id) {
+        let sql = `DELETE FROM channels WHERE id = ?`;
+        conn.query(
+          sql,
+          id,
+
+          (err, result) => {
+            if (err) {
+              return res.status(400).end();
+            }
+            if (result.affectedRows > 0) {
+              res.status(200).json({
+                message: `그동안 감사했습니다`,
+              });
+            } else {
+              Notmsg(res);
+            }
+          },
+        );
+      }
+    },
+  )
+
+  .get(
+    param('id').notEmpty().withMessage('채널 id 필요'),
+
+    (req, res) => {
+      const err = validationResult(req);
+      if (!err.isEmpty()) {
+        return res.status(400).end();
+      }
+
+      let {id} = req.params;
+      id = Number(id);
+
+      let sql = `SELECT *  FROM channels WHERE id = ?`;
+      conn.query(
+        sql,
+        id,
+
+        (err, result) => {
+          if (err) {
+            return res.status(400).end();
+          }
+          if (result.length) {
+            res.status(200).json(result);
+          } else {
+            Notmsg(res);
+          }
+        },
+      );
+    },
+  );
+
+const Notmsg = res => {
   res.status(404).json({message: `조회되는 유튜버가 없습니다🥲🥲`});
 };
 
