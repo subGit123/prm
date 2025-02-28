@@ -1,7 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const conn = require('../db');
-const {body, param, validationResult} = require('express-validator');
+const {body, validationResult} = require('express-validator');
+
+// jwt 모듈
+const jwt = require('jsonwebtoken');
+
+// .env 모듈
+const dotenv = require('dotenv');
+dotenv.config();
 
 router.use(express.json());
 
@@ -42,11 +49,29 @@ router.post(
         }
         let loginUser = result[0];
         if (loginUser && loginUser.password == password) {
+          // jwt token 발급
+          const token = jwt.sign(
+            {
+              email: loginUser.email,
+              name: loginUser.name,
+            },
+            process.env.PRIVATE_KEY,
+            //유효기간 설정하기
+            {expiresIn: '30m', issuer: 'kim'},
+          );
+
+          // 로그인 정보 쿠키에 담기 (token이라는 상자에 token을 담기)
+          // 여러개를 담을 수 있기 때문
+          res.cookie('token', token, {
+            //api 호출만 허용하겠다
+            httpOnly: true,
+          });
+
           res.status(201).json({
             message: `${loginUser.name}님 어서오세요 ㅎㅎ`,
           });
         } else {
-          res.status(404).json({
+          res.status(403).json({
             message: `이메일 또는 비밀번호가 없습니다.`,
           });
         }
