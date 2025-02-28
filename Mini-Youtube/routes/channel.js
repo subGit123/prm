@@ -5,10 +5,13 @@ const {body, param, validationResult} = require('express-validator');
 
 router.use(express.json());
 
-const validation = (req, res) => {
+const validation = (req, res, next) => {
   const err = validationResult(req);
 
-  if (!err.isEmpty()) {
+  if (err.isEmpty()) {
+    // 다음 할 일 찾아가기
+    return next();
+  } else {
     return res.status(400).json(err.array());
   }
 };
@@ -29,7 +32,7 @@ router
       validation,
     ],
 
-    (req, res) => {
+    (req, res, next) => {
       const {name, user_id} = req.body;
       let sql = `INSERT INTO channels (name , user_id) VALUES  (?,?) `;
 
@@ -44,7 +47,7 @@ router
           if (result.affectedRows > 0) {
             res.status(201).json({message: `${name}님 환영합니다 ㅎㅎ`});
           } else {
-            Notmsg(res);
+            return res.status(400).end();
           }
         },
       );
@@ -52,16 +55,14 @@ router
   )
 
   .get(
-    body('user_id')
-      .notEmpty()
-      .isInt()
-      .withMessage('user_id는 숫자로 입력해주세요'),
-
+    [
+      body('user_id')
+        .notEmpty()
+        .isInt()
+        .withMessage('user_id는 숫자로 입력해주세요'),
+      validation,
+    ],
     (req, res) => {
-      const err = validationResult(req);
-      if (!err.isEmpty()) {
-        return res.status(400).end();
-      }
       let {user_id} = req.body;
 
       let sql = `SELECT *  FROM channels WHERE user_id = ? `;
@@ -77,7 +78,7 @@ router
           if (result.length) {
             res.status(200).json(result);
           } else {
-            Notmsg(res);
+            return res.status(400).end();
           }
         },
       );
@@ -90,14 +91,10 @@ router
     [
       param('id').notEmpty().withMessage('채널 id 필요'),
       body('name').notEmpty().isString().withMessage('채널명 오류'),
+      validation,
     ],
 
     (req, res) => {
-      const err = validationResult(req);
-      if (!err.isEmpty()) {
-        return res.status(400).end();
-      }
-
       let {id} = req.params;
       id = parseInt(id);
       let {name} = req.body;
@@ -118,7 +115,7 @@ router
                 message: `${name}로 변경되었습니다`,
               });
             } else {
-              Notmsg(res);
+              return res.status(400).end();
             }
           },
         );
@@ -127,13 +124,8 @@ router
   )
 
   .delete(
-    param('id').notEmpty().isInt().withMessage('아이디 오류'),
+    [param('id').notEmpty().isInt().withMessage('아이디 오류'), validation],
     (req, res) => {
-      const err = validationResult(req);
-      if (!err.isEmpty()) {
-        return res.status(400).end();
-      }
-
       let {id} = req.params;
       id = Number(id);
 
@@ -152,7 +144,7 @@ router
                 message: `그동안 감사했습니다`,
               });
             } else {
-              Notmsg(res);
+              return res.status(400).end();
             }
           },
         );
@@ -161,14 +153,9 @@ router
   )
 
   .get(
-    param('id').notEmpty().withMessage('채널 id 필요'),
+    [param('id').notEmpty().withMessage('채널 id 필요'), validation],
 
     (req, res) => {
-      const err = validationResult(req);
-      if (!err.isEmpty()) {
-        return res.status(400).end();
-      }
-
       let {id} = req.params;
       id = Number(id);
 
@@ -184,7 +171,7 @@ router
           if (result.length) {
             res.status(200).json(result);
           } else {
-            Notmsg(res);
+            return res.status(400).end();
           }
         },
       );
