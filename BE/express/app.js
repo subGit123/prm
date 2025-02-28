@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
-const port = 1234;
+const dotenv = require('dotenv');
 
-app.listen(port, () => {
+dotenv.config();
+
+app.listen(process.env.PORT, () => {
   console.log(`http://localhost:${port}`);
 });
 
