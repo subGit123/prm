@@ -44,7 +44,9 @@ const book_detail = (req, res) => {
   let {id} = req.params;
   //   id = Number(id);
 
-  let sql = `SELECT * FROM books WHERE id = ? `;
+  let sql = `SELECT * FROM pageTurner.books 
+    LEFT JOIN  pageTurner.category ON books.category_id = category.id
+    WHERE books.id = ?`;
   conn.query(
     sql,
     id,
