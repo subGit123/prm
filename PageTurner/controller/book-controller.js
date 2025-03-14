@@ -1,13 +1,15 @@
 const conn = require('../db');
 const {StatusCodes} = require('http-status-codes');
 
-//도서 전체 조회 + category별 조회 + category별 신간 조회
+//도서 전체 조회 (category별 조회 + category별 신간 조회)
 const all_books = (req, res) => {
   let {category_id, new_book, limit, currentPage} = req.query;
 
   let offset = limit * (currentPage - 1);
 
-  let sql = `SELECT * FROM books `;
+  let sql = `SELECT *, 
+(SELECT COUNT(*) FROM likes WHERE liked_book_id = books.id) AS 'likes' 
+  FROM books `;
   let values = [];
 
   if (category_id && new_book) {
@@ -47,15 +49,21 @@ const all_books = (req, res) => {
 
 // book detail
 const book_detail = (req, res) => {
-  let {id} = req.params;
-  //   id = Number(id);
+  let book_id = req.params.id;
+  let {user_id} = req.body;
 
-  let sql = `SELECT * FROM pageTurner.books 
-    LEFT JOIN  pageTurner.category ON books.category_id = category.id
-    WHERE books.id = ?`;
+  let sql = `SELECT *,
+  (SELECT COUNT(*) FROM likes WHERE liked_book_id = books.id) AS '좋아요 갯수' ,
+    (SELECT EXISTS 
+      (SELECT * FROM likes WHERE user_id = ? AND liked_book_id = ?)) AS '좋아요 여부'
+    FROM books 
+    LEFT JOIN category ON books.category_id = category.category_id
+    WHERE books.id = ?;`;
+
+  let values = [user_id, book_id, book_id];
   conn.query(
     sql,
-    id,
+    values,
 
     (err, result) => {
       if (err) {
