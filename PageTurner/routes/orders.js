@@ -1,22 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const {
+  order,
+  get_order,
+  get_order_detail,
+} = require('../controller/order-controller');
 
 router.use(express.json());
 
 // write orders
-router.post('/', (req, res) => {
-  res.json('sucess order');
-});
+router.post('/', order);
 
 // select orders
-router.get('/', (req, res) => {
-  res.json('order list');
-});
+router.get('/', get_order);
 
 // select detail orders
-router.get('/:order_id', (req, res) => {
-  res.json('order detail list');
-});
+router.get('/:order_id', get_order_detail);
 
 // // delivery
 // router.get('/delivery', (req, res) => {

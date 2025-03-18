@@ -21,7 +21,6 @@ const addCart = (req, res) => {
 };
 
 // 장바구니 조회 + 예상 장바구니 목록 조회
-// 장바구니 조회 + 예상 장바구니 목록 조회
 const getCart = (req, res) => {
   const {cart_user_id, seleted} = req.body;
 
