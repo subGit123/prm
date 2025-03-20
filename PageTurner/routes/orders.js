@@ -15,16 +15,6 @@ router.post('/', order);
 router.get('/', get_order);
 
 // select detail orders
-router.get('/:order_id', get_order_detail);
-
-// // delivery
-// router.get('/delivery', (req, res) => {
-//   res.json('delivery');
-// });
-
-// // payment
-// router.post('/orderedBook', (req, res) => {
-//   res.json('money pay');
-// });
+router.get('/:id', get_order_detail);
 
 module.exports = router;

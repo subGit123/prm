@@ -1,15 +1,11 @@
-const mariadb = require('mysql2/promise'); // mysql에서 promsise 객체를 사용 가능
+const mariadb = require('mysql2');
 
-const connection = async () => {
-  const conn = await mariadb.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'pageTurner',
-    dateStrings: true,
-  });
-
-  return conn;
-};
+const connection = mariadb.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'root',
+  database: 'pageTurner',
+  dateStrings: true,
+});
 
 module.exports = connection;
