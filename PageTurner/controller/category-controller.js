@@ -13,8 +13,4 @@ const all_category = (req, res) => {
   });
 };
 
-// book 테이블과 join
-
-// SELECT * FROM books JOIN category ON books.category_id = category.id;
-
 module.exports = {all_category};

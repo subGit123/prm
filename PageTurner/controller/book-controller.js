@@ -1,5 +1,7 @@
 const conn = require('../db');
 const {StatusCodes} = require('http-status-codes');
+const ensureAuthrizaion = require('../auth');
+const jwt = require('jsonwebtoken');
 
 //도서 전체 조회 (category별 조회 + category별 신간 조회)
 const all_books = (req, res) => {
@@ -49,34 +51,75 @@ const all_books = (req, res) => {
 
 // book detail
 const book_detail = (req, res) => {
-  let book_id = req.params.id;
-  let {user_id} = req.body;
+  let authorization = ensureAuthrizaion(req, res);
 
-  let sql = `SELECT *,
-  (SELECT COUNT(*) FROM likes WHERE liked_book_id = books.id) AS '좋아요 갯수' ,
-    (SELECT EXISTS 
-      (SELECT * FROM likes WHERE user_id = ? AND liked_book_id = ?)) AS '좋아요 여부'
-    FROM books 
-    LEFT JOIN category ON books.category_id = category.category_id
-    WHERE books.id = ?;`;
+  let loginSQL = `SELECT *,
+      (SELECT COUNT(*) FROM likes WHERE liked_book_id = books.id) AS '좋아요 갯수' ,
+        (SELECT EXISTS
+          (SELECT * FROM likes WHERE user_id = ? AND liked_book_id = ?)) AS '좋아요 여부'
+        FROM books
+        LEFT JOIN category ON books.category_id = category.category_id
+        WHERE books.id = ?;`;
 
-  let values = [user_id, book_id, book_id];
-  conn.query(
-    sql,
-    values,
+  let noLoginSQL = `SELECT *,
+      (SELECT COUNT(*) FROM likes WHERE liked_book_id = books.id) AS '좋아요 갯수'
+        FROM books 
+        LEFT JOIN category ON books.category_id = category.category_id
+        WHERE books.id = ?;`;
 
-    (err, result) => {
-      if (err) {
-        return res.status(StatusCodes.BAD_REQUEST).end();
-      }
+  if (authorization instanceof jwt.TokenExpiredError) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: '로그인 세센이 완료. 다시 로그인 필요',
+    });
+  } else if (authorization instanceof jwt.JsonWebTokenError) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: '토큰 이상 감지',
+    });
+  }
+  // 로그인을 하지 않는 상태
+  else if (authorization instanceof ReferenceError) {
+    let book_id = req.params.id;
 
-      if (result[0]) {
-        return res.status(StatusCodes.OK).json(result);
-      } else {
-        return res.status(StatusCodes.NOT_FOUND).end();
-      }
-    },
-  );
+    let values = [book_id];
+
+    conn.query(
+      noLoginSQL,
+      values,
+
+      (err, result) => {
+        if (err) {
+          return res.status(StatusCodes.BAD_REQUEST).end();
+        }
+
+        if (result[0]) {
+          return res.status(StatusCodes.OK).json(result);
+        } else {
+          return res.status(StatusCodes.NOT_FOUND).end();
+        }
+      },
+    );
+  } else {
+    let book_id = req.params.id;
+
+    let values = [authorization.id, book_id, book_id];
+
+    conn.query(
+      loginSQL,
+      values,
+
+      (err, result) => {
+        if (err) {
+          return res.status(StatusCodes.BAD_REQUEST).end();
+        }
+
+        if (result[0]) {
+          return res.status(StatusCodes.OK).json(result);
+        } else {
+          return res.status(StatusCodes.NOT_FOUND).end();
+        }
+      },
+    );
+  }
 };
 
 module.exports = {

@@ -1,9 +1,7 @@
 const conn = require('../db');
 const {StatusCodes} = require('http-status-codes');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-dotenv.config();
-const ensureAuthrizaion = require('../middleware/ensureAuthrizaion');
+const ensureAuthrizaion = require('../auth');
 
 // 좋아요 추가
 const addLike = (req, res) => {
@@ -11,11 +9,11 @@ const addLike = (req, res) => {
 
   let authorization = ensureAuthrizaion(req, res);
 
-  if (ensureAuthrizaion instanceof jwt.TokenExpiredError) {
+  if (authorization instanceof jwt.TokenExpiredError) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: '로그인 세센이 완료. 다시 로그인 필요',
     });
-  } else if (ensureAuthrizaion instanceof jwt.JsonWebTokenError) {
+  } else if (authorization instanceof jwt.JsonWebTokenError) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: '토큰 이상 감지',
     });
@@ -66,12 +64,5 @@ const removeLike = (req, res) => {
     );
   }
 };
-
-// function ensureAuthrizaion(req) {
-//   let receivedJWT = req.headers['authorization'];
-//   let decodedJWT = jwt.verify(receivedJWT, `${process.env.PRIVATE_KEY}`);
-
-//   return decodedJWT;
-// }
 
 module.exports = {addLike, removeLike};

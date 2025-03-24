@@ -1,8 +1,7 @@
 const conn = require('../db');
 const {StatusCodes} = require('http-status-codes');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-dotenv.config();
+const ensureAuthrizaion = require('../auth');
 
 // 카트 추가
 const addCart = (req, res) => {
@@ -41,25 +40,33 @@ const getCart = (req, res) => {
 
   let loginUserID = ensureAuthrizaion(req, res);
 
-  if (ensureAuthrizaion instanceof jwt.TokenExpiredError) {
+  if (loginUserID instanceof jwt.TokenExpiredError) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: '로그인 세센이 완료. 다시 로그인 필요',
     });
-  } else if (ensureAuthrizaion instanceof jwt.JsonWebTokenError) {
+  } else if (loginUserID instanceof jwt.JsonWebTokenError) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       message: '토큰 이상 감지',
     });
   } else {
     let sql = `
-    SELECT cartItems.id, cart_book_id, title, summary, quantity, price 
-    FROM cartItems LEFT JOIN books 
-    ON cartItems.cart_book_id = books.id
-    WHERE cart_user_id = ? 
-    AND  cartItems.id IN(?)`;
+      SELECT cartItems.id, cart_book_id, title, summary, quantity, price 
+      FROM cartItems LEFT JOIN books 
+      ON cartItems.cart_book_id = books.id
+      WHERE cart_user_id = ? 
+      `;
+
+    let values = [loginUserID.id];
+
+    if (seleted) {
+      // 선택한 장바구니 목록 조회
+      sql += `AND  cartItems.id IN(?)`;
+      values.push(seleted);
+    }
 
     conn.query(
       sql,
-      [loginUserID.id, seleted],
+      values,
 
       (err, result) => {
         if (err) {
@@ -74,44 +81,35 @@ const getCart = (req, res) => {
 
 // 장바구니 삭제
 const removeCartItem = (req, res) => {
-  const cart_id = req.params.id;
-  // let loginUserID = ensureAuthrozaion(req);
+  let loginUserID = ensureAuthrizaion(req, res);
 
-  let sql = `
+  if (loginUserID instanceof jwt.TokenExpiredError) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: '로그인 세센이 완료. 다시 로그인 필요',
+    });
+  } else if (loginUserID instanceof jwt.JsonWebTokenError) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: '토큰 이상 감지',
+    });
+  } else {
+    const cart_id = req.params.id;
+
+    let sql = `
   DELETE FROM cartItems WHERE id = ?`;
 
-  conn.query(
-    sql,
-    cart_id,
+    conn.query(
+      sql,
+      cart_id,
 
-    (err, result) => {
-      if (err) {
-        return res.status(StatusCodes.BAD_REQUEST).end();
-      }
+      (err, result) => {
+        if (err) {
+          return res.status(StatusCodes.BAD_REQUEST).end();
+        }
 
-      return res.status(StatusCodes.OK).json(result);
-    },
-  );
+        return res.status(StatusCodes.OK).json(result);
+      },
+    );
+  }
 };
 
-function ensureAuthrizaion(req, res) {
-  try {
-    let receivedJWT = req.headers['authorization'];
-    let decodedJWT = jwt.verify(receivedJWT, `${process.env.PRIVATE_KEY}`);
-
-    return decodedJWT;
-  } catch (e) {
-    console.log(e);
-
-    return e;
-  }
-}
-
 module.exports = {addCart, getCart, removeCartItem};
-
-// JWT expires
-
-// ensureAuthrozaion 모듈화
-
-// 장바구니 목록 조회 => 내 장바구니 보기
-// (현재는 전체가 보임)
