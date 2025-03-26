@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>텍스트</h1>
+    <script>
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const day = today.getDate();
+
+      const formattedMonth = month.toString().padStart(2, '0');
+      const formattedDay = day.toString().padStart(2, '0');
+
+      console.log(`${year}-${formattedMonth}-${formattedDay}`);
+    </script>
+  </body>
+</html>
