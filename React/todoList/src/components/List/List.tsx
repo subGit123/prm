@@ -33,7 +33,7 @@ const List: FC<TListProps> = ({list, boardId}) => {
   const handleTaskChange = (
     boardId: string,
     listId: string,
-    taskId: string,
+    _taskId: string,
     task: ITask,
   ) => {
     dispatch(
@@ -70,7 +70,7 @@ const List: FC<TListProps> = ({list, boardId}) => {
           />
         </div>
       ))}
-      <ActionButton />
+      <ActionButton boardId={boardId} listId={list.listId} />
     </div>
   );
 };

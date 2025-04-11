@@ -1,7 +1,34 @@
-import React from 'react';
+import {FC, useState} from 'react';
+import {IoIosAdd} from 'react-icons/io';
+import DropDownForm from './DropDownForm/DropDownForm';
+import {listButton, taskButton} from './ActionButton.css';
 
-const ActionButton = () => {
-  return <div>액셔ㅑㄴ 버튼</div>;
+type TActionButtonProps = {
+  boardId: string;
+  listId: string;
+  list?: boolean;
+};
+
+const ActionButton: FC<TActionButtonProps> = ({boardId, listId, list}) => {
+  // 액션 버튼을 구분하기 위함
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const buttonText = list ? '새로운 리스트 등록' : '새로운 일 등록';
+
+  return isFormOpen ? (
+    <DropDownForm
+      setIsFormOpen={setIsFormOpen}
+      list={list ? true : false}
+      boardId={boardId}
+      listId={listId}
+    />
+  ) : (
+    <div
+      className={list ? listButton : taskButton}
+      onClick={() => setIsFormOpen(true)}>
+      <IoIosAdd />
+      <p>{buttonText}</p>
+    </div>
+  );
 };
 
 export default ActionButton;

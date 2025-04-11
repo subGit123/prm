@@ -96,6 +96,30 @@ const boardsSlice = createSlice({
       state.boardArray.push(payload.board);
     },
 
+    addList: (state, {payload}: PayloadAction<TAddListAction>) => {
+      state.boardArray.map(v =>
+        v.boardId === payload.boardId
+          ? {...v, lists: v.lists.push(payload.list)}
+          : v,
+      );
+    },
+
+    addTask: (state, {payload}: PayloadAction<TAddTaskAction>) => {
+      state.boardArray.map(v =>
+        v.boardId === payload.boardId
+          ? {
+              //보드 아이디와 리스트 아이디까지 같아야만 task 업데이트
+              ...v,
+              lists: v.lists.map(v =>
+                v.listId === payload.listId
+                  ? {...v, tasks: v.tasks.push(payload.task)}
+                  : v,
+              ),
+            }
+          : v,
+      );
+    },
+
     deleteList: (state, {payload}: PayloadAction<TDeleteListAction>) => {
       state.boardArray = state.boardArray.map(v =>
         v.boardId === payload.boardId
@@ -111,33 +135,6 @@ const boardsSlice = createSlice({
       state.modalActive = payload;
     },
 
-    //   addList: (state, {payload}: PayloadAction<TAddListAction>) => {
-    //     state.boardArray.map(board =>
-    //       board.boardId === payload.boardId
-    //         ? {
-    //             ...board,
-    //             lists: board.lists.push(payload.list),
-    //           }
-    //         : board,
-    //     );
-    //   },
-    //   addTask: (state, {payload}: PayloadAction<TAddTaskAction>) => {
-    //     state.boardArray.map(board =>
-    //       board.boardId === payload.boardId
-    //         ? {
-    //             ...board,
-    //             lists: board.lists.map(list =>
-    //               list.listId === payload.listId
-    //                 ? {
-    //                     ...list,
-    //                     tasks: list.tasks.push(payload.task),
-    //                   }
-    //                 : list,
-    //             ),
-    //           }
-    //         : board,
-    //     );
-    //   },
     //   updateTask: (state, {payload}: PayloadAction<TAddTaskAction>) => {
     //     state.boardArray = state.boardArray.map(board =>
     //       board.boardId === payload.boardId
@@ -220,13 +217,13 @@ const boardsSlice = createSlice({
 export const {
   // sort,
   addBoard,
+  addTask,
+  addList,
   // deleteBoard,
   deleteList,
   // deleteTask,
   // updateTask,
   setModalActive,
-  // addTask,
-  // addList,
 } = boardsSlice.actions;
 
 export const boardsReducer = boardsSlice.reducer;
