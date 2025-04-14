@@ -104,6 +104,12 @@ const boardsSlice = createSlice({
       );
     },
 
+    deleteBoard: (state, {payload}: PayloadAction<TDeleteBoardAction>) => {
+      state.boardArray = state.boardArray.filter(
+        v => v.boardId !== payload.boardId,
+      );
+    },
+
     addTask: (state, {payload}: PayloadAction<TAddTaskAction>) => {
       state.boardArray.map(v =>
         v.boardId === payload.boardId
@@ -117,6 +123,46 @@ const boardsSlice = createSlice({
               ),
             }
           : v,
+      );
+    },
+
+    updateTask: (state, {payload}: PayloadAction<TAddTaskAction>) => {
+      state.boardArray = state.boardArray.map(v =>
+        v.boardId === payload.boardId
+          ? {
+              ...v,
+              lists: v.lists.map(v =>
+                v.listId === payload.listId
+                  ? {
+                      ...v,
+                      tasks: v.tasks.map(v =>
+                        v.taskId === payload.task.taskId ? payload.task : v,
+                      ),
+                    }
+                  : v,
+              ),
+            }
+          : v,
+      );
+    },
+
+    deleteTask: (state, {payload}: PayloadAction<TDeleteTaskAction>) => {
+      state.boardArray = state.boardArray.map(board =>
+        board.boardId === payload.boardId
+          ? {
+              ...board,
+              lists: board.lists.map(list =>
+                list.listId === payload.listId
+                  ? {
+                      ...list,
+                      tasks: list.tasks.filter(
+                        task => task.taskId !== payload.taskId,
+                      ),
+                    }
+                  : list,
+              ),
+            }
+          : board,
       );
     },
 
@@ -135,59 +181,6 @@ const boardsSlice = createSlice({
       state.modalActive = payload;
     },
 
-    //   updateTask: (state, {payload}: PayloadAction<TAddTaskAction>) => {
-    //     state.boardArray = state.boardArray.map(board =>
-    //       board.boardId === payload.boardId
-    //         ? {
-    //             ...board,
-    //             lists: board.lists.map(list =>
-    //               list.listId === payload.listId
-    //                 ? {
-    //                     ...list,
-    //                     tasks: list.tasks.map(task =>
-    //                       task.taskId === payload.task.taskId
-    //                         ? payload.task
-    //                         : task,
-    //                     ),
-    //                   }
-    //                 : list,
-    //             ),
-    //           }
-    //         : board,
-    //     );
-    //   },
-    //   deleteTask: (state, {payload}: PayloadAction<TDeleteTaskAction>) => {
-    //     state.boardArray = state.boardArray.map(board =>
-    //       board.boardId === payload.boardId
-    //         ? {
-    //             ...board,
-    //             lists: board.lists.map(list =>
-    //               list.listId === payload.listId
-    //                 ? {
-    //                     ...list,
-    //                     tasks: list.tasks.filter(
-    //                       task => task.taskId !== payload.taskId,
-    //                     ),
-    //                   }
-    //                 : list,
-    //             ),
-    //           }
-    //         : board,
-    //     );
-    //   },
-    //   deleteList: (state, {payload}: PayloadAction<TDeleteListAction>) => {
-    //     state.boardArray = state.boardArray.map(board =>
-    //       board.boardId === payload.boardId
-    //         ? {
-    //             ...board,
-    //             lists: board.lists.filter(list => list.listId !== payload.listId),
-    //           }
-    //         : board,
-    //     );
-    //   },
-    //   setModalActive: (state, {payload}: PayloadAction<boolean>) => {
-    //     state.modalActive = payload;
-    //   },
     //   sort: (state, {payload}: PayloadAction<TSortAction>) => {
     //     // same list
     //     if (payload.droppableIdStart === payload.droppableIdEnd) {
@@ -219,10 +212,10 @@ export const {
   addBoard,
   addTask,
   addList,
-  // deleteBoard,
+  deleteBoard,
   deleteList,
-  // deleteTask,
-  // updateTask,
+  updateTask,
+  deleteTask,
   setModalActive,
 } = boardsSlice.actions;
 
