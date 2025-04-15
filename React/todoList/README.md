@@ -8,6 +8,7 @@
 - @vanilla-extract/vite-plugin : vite 환경에서 vanilla-extract를 사용할 수 있게 해주는 플러그인
 - uuid : 데이터베이스에서 고유한 키를 생성할 때 사용
 - react-beautiful-dnd : 드래그 앤 드롭 기능을 쉽게 구현할 수 있도록 해줌
+- firebase : 구글 로그인 기능을 사용하기 위함
 
 rafce
 

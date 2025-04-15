@@ -181,17 +181,33 @@ const boardsSlice = createSlice({
       state.modalActive = payload;
     },
 
-    //   sort: (state, {payload}: PayloadAction<TSortAction>) => {
-    //     // same list
-    //     if (payload.droppableIdStart === payload.droppableIdEnd) {
-    //       const list = state.boardArray[payload.boardIndex].lists.find(
-    //         list => list.listId === payload.droppableIdStart,
-    //       );
-    //       // 변경시키는 아이템을 배열에서 삭제
-    //       // return 값으로 지워진 아이템을 잡아준다
-    //       const card = list?.tasks.splice(payload.droppableIndexStart, 1);
-    //       list?.tasks.splice(payload.droppableIndexEnd, 0, ...card!);
-    //     }
+    sort: (state, {payload}: PayloadAction<TSortAction>) => {
+      // 같은 리스트에서 이동 시
+      if (payload.droppableIdStart === payload.droppableIdEnd) {
+        const list = state.boardArray[payload.boardIndex].lists.find(
+          list => payload.droppableIdStart === list.listId,
+        );
+
+        // 변경시키는 아이템을 배열에서 지운 후 해당 아이템 가져오기
+        const card = list?.tasks.splice(payload.droppableIndexStart, 1);
+        list?.tasks.splice(payload.droppableIndexEnd, 0, ...card!);
+      }
+
+      // 다른 리스트로 이동 시
+      if (payload.droppableIdStart !== payload.droppableIdEnd) {
+        const listStart = state.boardArray[payload.boardIndex].lists.find(
+          list => list.listId === payload.droppableIdStart,
+        );
+
+        const card = listStart!.tasks.splice(payload.droppableIndexStart, 1);
+        const listEnd = state.boardArray[payload.boardIndex].lists.find(
+          list => list.listId === payload.droppableIdEnd,
+        );
+
+        listEnd?.tasks.splice(payload.droppableIndexEnd, 0, ...card);
+      }
+    },
+
     //     // other list
     //     if (payload.droppableIdStart !== payload.droppableIdEnd) {
     //       const listStart = state.boardArray[payload.boardIndex].lists.find(
@@ -208,7 +224,6 @@ const boardsSlice = createSlice({
 });
 
 export const {
-  // sort,
   addBoard,
   addTask,
   addList,
@@ -217,6 +232,7 @@ export const {
   updateTask,
   deleteTask,
   setModalActive,
+  sort,
 } = boardsSlice.actions;
 
 export const boardsReducer = boardsSlice.reducer;

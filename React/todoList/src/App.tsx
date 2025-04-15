@@ -11,9 +11,10 @@ import ListsContainer from './components/ListsContainer/ListsContainer.tsx';
 import {useTypedDispatch, useTypedSelector} from './hooks/redux.ts';
 import EditModal from './components/EditModal/EditModal.tsx';
 import LoggerModal from './components/LoggerModal/LoggerModal.tsx';
-import {deleteBoard} from './store/slices/boardSlice.ts';
+import {deleteBoard, sort} from './store/slices/boardSlice.ts';
 import {addLog} from './store/slices/loggerSlice.ts';
 import {v4} from 'uuid';
+import {DragDropContext} from 'react-beautiful-dnd';
 
 function App() {
   const dispatch = useTypedDispatch();
@@ -59,6 +60,41 @@ function App() {
     }
   };
 
+  const handleDrapEnd = (result: any) => {
+    const {destination, source, draggableId} = result;
+
+    const sourceList = lists.filter(v => v.listId === source.droppableId)[0];
+
+    dispatch(
+      sort({
+        boardIndex: boards.findIndex(v => v.boardId === activeBoardId),
+        droppableIdStart: source.droppableId,
+        droppableIdEnd: destination.droppableId,
+        droppableIndexStart: source.index,
+        droppableIndexEnd: destination.index,
+        draggableId: draggableId,
+      }),
+    );
+
+    dispatch(
+      addLog({
+        logId: v4(),
+        logAuthor: 'user',
+        logMessage: `리스트 : ${sourceList.listName} 에서
+        리스트 ${
+          lists.filter(list => list.listId === destination.droppableId)[0]
+            .listName
+        }으로
+        ${
+          sourceList.tasks.filter(task => task.taskId === draggableId)[0]
+            .taskName
+        }을 옮김
+        `,
+        logTimestamp: String(Date.now()),
+      }),
+    );
+  };
+
   return (
     <div className={appContainer}>
       {isLoggerOpen ? <LoggerModal setIsLoggerOpen={setIsLoggerOpen} /> : null}
@@ -70,7 +106,9 @@ function App() {
       />
 
       <div className={board}>
-        <ListsContainer lists={lists} boardId={getActiveBoard.boardId} />
+        <DragDropContext onDragEnd={handleDrapEnd}>
+          <ListsContainer lists={lists} boardId={getActiveBoard.boardId} />
+        </DragDropContext>
       </div>
 
       <div className={buttons}>

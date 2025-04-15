@@ -1,4 +1,4 @@
-import React, {FC, useRef, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {useTypedDispatch, useTypedSelector} from '../../hooks/redux';
 import SideForm from './SideForm/SideForm';
 import {FiLogIn, FiPlusCircle} from 'react-icons/fi';
@@ -19,7 +19,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import {app} from '../../firebase';
-import {removeUser, setUser} from '../../store/slices/userSlice';
+import {deleteUser, setUser} from '../../store/slices/userSlice';
 import {useAuth} from '../../hooks/useAuth';
 
 type TBoardListProps = {
@@ -30,6 +30,7 @@ type TBoardListProps = {
 
 // FC function Component의 약자 = 기능형 컴포넌트 정의
 const BoardList: FC<TBoardListProps> = ({activeBoardId, setActiveBoardId}) => {
+  const dispatch = useTypedDispatch();
   const {boardArray} = useTypedSelector(state => state.boards);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -37,38 +38,38 @@ const BoardList: FC<TBoardListProps> = ({activeBoardId, setActiveBoardId}) => {
     setIsFormOpen(!isFormOpen);
   };
 
-  // const dispatch = useTypedDispatch();
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  const {isAuth} = useAuth();
 
-  // const auth = getAuth(app);
-  // const provider = new GoogleAuthProvider();
+  const handleLogin = () => {
+    signInWithPopup(auth, provider)
+      .then(userCredential => {
+        // 로그인 한 사용자 정보가 담겨 있음
+        console.log(userCredential.user.displayName);
 
-  // const {isAuth} = useAuth();
+        dispatch(
+          setUser({
+            email: userCredential.user.email,
+            id: userCredential.user.uid,
+          }),
+        );
+      })
+      .catch(e => {
+        console.error(e);
+      });
+  };
 
-  // const handleLogin = () => {
-  //   signInWithPopup(auth, provider)
-  //     .then(userCredential => {
-  //       console.log(userCredential);
-  //       dispatch(
-  //         setUser({
-  //           email: userCredential.user.email,
-  //           id: userCredential.user.uid,
-  //         }),
-  //       );
-  //     })
-  //     .catch(error => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // const handleSignOut = () => {
-  //   signOut(auth)
-  //     .then(() => {
-  //       dispatch(removeUser());
-  //     })
-  //     .catch(error => {
-  //       console.error(error);
-  //     });
-  // };
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(deleteUser());
+        alert('signOut');
+      })
+      .catch(e => {
+        console.error(e);
+      });
+  };
 
   return (
     <div className={container}>
@@ -96,6 +97,12 @@ const BoardList: FC<TBoardListProps> = ({activeBoardId, setActiveBoardId}) => {
           <SideForm setIsFormOpen={setIsFormOpen} />
         ) : (
           <FiPlusCircle className={addButton} onClick={handleClick} />
+        )}
+
+        {isAuth ? (
+          <GoSignOut className={addButton} onClick={handleSignOut} />
+        ) : (
+          <FiLogIn className={addButton} onClick={handleLogin} />
         )}
       </div>
     </div>
