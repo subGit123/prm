@@ -1,20 +1,23 @@
-import {useState} from 'react';
 import Home from './pages/Home';
+import Layout from './components/layout/Layout';
+import {GlobalStyle} from './style/global.ts';
+import {ThemeProvider} from 'styled-components';
+import {getTheme} from './style/theme.ts';
+import ThemeSwitcher from './components/header/ThemeSwitcher.tsx';
+import {useContext} from 'react';
+import {
+  PageTurnerThemeProvider,
+  ThemeContext,
+} from './context/ThemeContext.tsx';
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const oncli = () => {
-    setCount(count + 1);
-  };
-
   return (
-    <>
-      <Home />
-      <h1>book store</h1>
-      {count}
-      <button onClick={oncli}>클릭</button>
-    </>
+    <PageTurnerThemeProvider>
+      <ThemeSwitcher />
+      <Layout>
+        <Home />
+      </Layout>
+    </PageTurnerThemeProvider>
   );
 }
 
