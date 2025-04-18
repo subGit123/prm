@@ -15,6 +15,8 @@
 
 - sanitize css : 다양한 브라우저에서 스타일의 일관성을 유지해줌
 - styled components : CSS-in-JS 방식으로 컴포넌트별로 스타일을 관리
+- @types/testing-library\_\_react : 컴포넌트 테스트를 위함
+- react-icons : 리액트 아이콘을 사용하기 위함
 
 ---
 

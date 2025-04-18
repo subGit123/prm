@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import Footer from '../common/Footer';
 import Headers from '../common/Headers';
 
@@ -9,10 +10,17 @@ const Layout = ({children}: LayoutProps) => {
   return (
     <div>
       <Headers />
-      <main>{children}</main>
+      <LayoutStyle>{children}</LayoutStyle>
       <Footer />
     </div>
   );
 };
+
+const LayoutStyle = styled.main`
+  width: 100%;
+  margin: 0 auto;
+  max-width: ${({theme}) => theme.layout.width.large};
+  padding: 20px 0;
+`;
 
 export default Layout;
