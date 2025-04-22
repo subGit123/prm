@@ -17,6 +17,9 @@
 - styled components : CSS-in-JS 방식으로 컴포넌트별로 스타일을 관리
 - @types/testing-library\_\_react : 컴포넌트 테스트를 위함
 - react-icons : 리액트 아이콘을 사용하기 위함
+- react-router-dom : 라우팅을 관리하기 위함
+- axios : http 요청을 도와줌
+- react-hook-form : form 관리 및 유효성 검사를 하기 위함
 
 ---
 
@@ -55,3 +58,13 @@ ThemeProvider : 테마를 애플리케이션에 적용하는 데 사용되는 �
 ### context api
 
 전역 상태를 관리하고 여러 컴포넌트 간에 데이터를 전달하는데 사용
+
+---
+
+### API flow
+
+<img src='./src/assets/git/API-flow.png'>
+
+[레이아웃별로 고려하면 좋은 점]
+
+렌더영역 깔끔하게 유지

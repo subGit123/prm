@@ -2,14 +2,43 @@ import Home from './pages/Home';
 import Layout from './components/layout/Layout';
 import ThemeSwitcher from './components/header/ThemeSwitcher.tsx';
 import {PageTurnerThemeProvider} from './context/ThemeContext.tsx';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import Error from './components/common/Error.tsx';
+import Signup from './pages/Signup.tsx';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: (
+      <Layout>
+        <Home />
+      </Layout>
+    ),
+    errorElement: <Error />,
+  },
+  {
+    path: '/books',
+    element: (
+      <Layout>
+        <div>도서 목록</div>
+      </Layout>
+    ),
+  },
+  {
+    path: '/signup',
+    element: (
+      <Layout>
+        <Signup />
+      </Layout>
+    ),
+  },
+]);
 
 function App() {
   return (
     <PageTurnerThemeProvider>
       <ThemeSwitcher />
-      <Layout>
-        <Home />
-      </Layout>
+      <RouterProvider router={router} />
     </PageTurnerThemeProvider>
   );
 }

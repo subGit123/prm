@@ -1,44 +1,31 @@
 import {styled} from 'styled-components';
 import logo from '../../assets/images/logo.png';
 import {FaRegUser, FaSignInAlt} from 'react-icons/fa';
-
-const CATEGORY = [
-  {
-    id: null,
-    name: '전체',
-  },
-  {
-    id: 0,
-    name: '동화',
-  },
-  {
-    id: 1,
-    name: '소설',
-  },
-  {
-    id: 2,
-    name: '사회',
-  },
-];
+import {Link} from 'react-router-dom';
+import useCategory from '../../hooks/useCategory';
 
 const Headers = () => {
+  const {category} = useCategory();
+
   return (
     <HeaderStyle>
       <h1 className="logo">
-        <img src={logo} alt="logo img" />
+        <Link to="/">
+          <img src={logo} alt="logo img" />
+        </Link>
       </h1>
       <nav className="category">
         <ul>
-          {CATEGORY.map(category => (
-            <li key={category.id}>
-              <a
-                href={
-                  category.id === null
+          {category.map(category => (
+            <li key={category.category_id}>
+              <Link
+                to={
+                  category.category_id === null
                     ? `/books`
                     : `/books?category_id=${category.id}`
                 }>
-                {category.name}
-              </a>
+                {category.category_name}
+              </Link>
             </li>
           ))}
         </ul>
@@ -46,16 +33,16 @@ const Headers = () => {
       <nav className="auth">
         <ul>
           <li>
-            <a href="/login">
+            <Link to="/login">
               <FaSignInAlt />
               Login
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/signUp">
+            <Link to="/signUp">
               <FaRegUser />
               Sign Up
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
@@ -92,7 +79,7 @@ const HeaderStyle = styled.header`
           color: ${({theme}) => theme.color.text};
 
           &:hover {
-            ${({theme}) => theme.color.primary}
+            color: ${({theme}) => theme.color.background};
           }
         }
       }
