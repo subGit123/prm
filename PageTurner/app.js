@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -14,6 +15,14 @@ const categoryRouter = require('./routes/category');
 const cartRouter = require('./routes/cart');
 const likeRouter = require('./routes/likes');
 const orderRouter = require('./routes/orders');
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }),
+);
 
 app.use('/users', userRouter);
 app.use('/books', bookRouter);
