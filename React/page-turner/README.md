@@ -20,6 +20,7 @@
 - react-router-dom : 라우팅을 관리하기 위함
 - axios : http 요청을 도와줌
 - react-hook-form : form 관리 및 유효성 검사를 하기 위함
+- zustand : 상태 관리를 위한 라이브러리
 
 ---
 
