@@ -1,4 +1,3 @@
-// components/book/Bookfilter.tsx
 import styled from 'styled-components';
 import useCategory from '../../hooks/useCategory';
 import Button from '../common/Button';

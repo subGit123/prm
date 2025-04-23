@@ -8,6 +8,7 @@ import Signup from './pages/Signup.tsx';
 import ResetPassword from './pages/ResetPassword.tsx';
 import Login from './pages/Login.tsx';
 import Books from './pages/Books.tsx';
+import BookDetail from './pages/BookDetail.tsx';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <Login />
+      </Layout>
+    ),
+  },
+  {
+    path: '/book/:bookId',
+    element: (
+      <Layout>
+        <BookDetail />
       </Layout>
     ),
   },
