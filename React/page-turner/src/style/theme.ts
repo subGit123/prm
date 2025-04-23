@@ -51,7 +51,7 @@ export const light: DefaultTheme = {
   color: {
     primary: '#1A237E',
     background: '#283593',
-    secondary: 'lightgreen',
+    secondary: 'black',
     third: 'green',
     border: 'grey',
     text: 'black',
