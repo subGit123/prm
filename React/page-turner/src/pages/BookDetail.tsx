@@ -1,6 +1,6 @@
 import {useParams} from 'react-router-dom';
 import styled from 'styled-components';
-import {useBook} from '../hooks/useBook';
+import {useBook} from '../hooks/useBookDetail';
 import {getImgSrc} from '../utils/image';
 import Title from '../components/common/Title';
 import {BookDetail as IBookDetail} from '../models/book.model';
@@ -8,6 +8,7 @@ import {formatDate, formatNumber} from '../utils/Format';
 import {Link} from 'react-router-dom';
 import ElipsisBox from '../components/common/ElipsisBox';
 import LikeButton from '../components/BookDetail/LikeButton';
+import AddToCart from '../components/BookDetail/AddToCart';
 
 const bookInfoList = [
   {
@@ -49,7 +50,7 @@ const bookInfoList = [
 
 const BookDetail = () => {
   const {bookId} = useParams();
-  const {book} = useBook(bookId);
+  const {book, likeToggle} = useBook(bookId);
 
   if (!book) return null;
 
@@ -78,10 +79,12 @@ const BookDetail = () => {
         <p className="summary">{book.summary}</p>
 
         <div className="like">
-          <LikeButton book={book} onClick={() => {}} />
+          <LikeButton book={book} onClick={likeToggle} />
         </div>
 
-        <div className="add-cart">장바구니 넣기</div>
+        <div className="add-cart">
+          <AddToCart book={book} />
+        </div>
       </div>
       <div className="content">
         <Title size="medium">상세 설명</Title>
