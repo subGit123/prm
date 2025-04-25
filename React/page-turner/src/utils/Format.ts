@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 
-export const formatNumber = (num: number): string => {
+export const formatNumber = (num: number | null | undefined): string => {
+  if (num === null || num === undefined) {
+    return '0'; // 또는 다른 기본값
+  }
   return num.toLocaleString();
 };
 

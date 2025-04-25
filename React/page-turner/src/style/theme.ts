@@ -87,7 +87,7 @@ export const light: DefaultTheme = {
       backgroundColor: 'midnightblue',
     },
     normal: {
-      color: 'balck',
+      color: 'black',
       backgroundColor: 'lightgrey',
     },
     like: {
@@ -126,5 +126,7 @@ export const getTheme = (themeName: ThemeName): DefaultTheme => {
       return light;
     case 'dark':
       return dark;
+    default:
+      return light;
   }
 };

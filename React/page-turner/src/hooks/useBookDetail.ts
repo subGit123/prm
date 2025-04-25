@@ -5,12 +5,12 @@ import {useAuthStore} from '../store/authStore';
 import useAlert from './useAlert';
 import {addCart} from '../api/carts.api';
 
-export const useBook = (bookId: string | undefined) => {
+export const useBook = (bookId: number | undefined) => {
   const [book, setBook] = useState<BookDetail | null>(null);
   const [cartAdded, setCartAdded] = useState(false);
 
   const {isloggedIn} = useAuthStore();
-  const showAlert = useAlert();
+  const {showAlert} = useAlert();
 
   const likeToggle = () => {
     // 권한 확인 (로그인 여부)
@@ -49,7 +49,7 @@ export const useBook = (bookId: string | undefined) => {
     if (!book) return;
 
     addCart({
-      book_id: book.id,
+      cart_book_id: book.id,
       quantity: quantity,
     }).then(() => {
       setCartAdded(true);
@@ -62,8 +62,8 @@ export const useBook = (bookId: string | undefined) => {
   useEffect(() => {
     if (!bookId) return;
 
-    fetchBook(bookId).then(book => {
-      setBook(book);
+    fetchBook(Number(bookId)).then(book => {
+      setBook(Array.isArray(book) ? book[0] : book);
     });
   }, [bookId]);
 

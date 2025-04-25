@@ -31,19 +31,19 @@ export const fetchBooks = async (params: FetchBooksParams) => {
   }
 };
 
-export const fetchBook = async (bookId: string) => {
-  const res = await httpClient.get<BookDetail>(`/books/${bookId}`);
+export const fetchBook = async (bookId: number) => {
+  const res = await httpClient.get<BookDetail>(`/books/book_detail/${bookId}`);
   return res.data;
 };
 
 export const likeBook = async (bookId: number) => {
-  const res = await httpClient.post(`/likes/${bookId}`);
+  const res = await httpClient.post(`/likes/book_likes/${bookId}`);
 
   return res.data;
 };
 
 export const unLikeBook = async (bookId: number) => {
-  const res = await httpClient.delete(`/likes/${bookId}`);
+  const res = await httpClient.delete(`/likes/book_likes/${bookId}`);
 
   return res.data;
 };

@@ -12,7 +12,7 @@ interface Props {
 
 const AddToCart = ({book}: Props) => {
   const [quantity, setQuantity] = useState<number>(1);
-  const {addToCart, cartAdded} = useBook(book.id.toString());
+  const {addToCart, cartAdded} = useBook(book.id);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuantity(Number(e.target.value));
@@ -42,16 +42,21 @@ const AddToCart = ({book}: Props) => {
           -
         </Button>
       </div>
-      <Button
-        size="medium"
-        scheme="primary"
-        onClick={() => addToCart(quantity)}>
-        장바구니 담기
-      </Button>
+      <div>
+        <Button
+          size="medium"
+          scheme="primary"
+          className="addCart"
+          onClick={() => {
+            addToCart(quantity);
+          }}>
+          장바구니 담기
+        </Button>
+      </div>
 
       <div className="added">
         <p>장바구니에 추가되었습니다.</p>
-        <Link to="/carts">장바구니로 이동</Link>
+        <Link to="/cart">장바구니로 이동</Link>
       </div>
     </AddToCartStyle>
   );
@@ -64,9 +69,15 @@ interface AddToCartStyleProps {
 
 const AddToCartStyle = styled.div<AddToCartStyleProps>`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
   position: relative;
+  gap: 24px;
+
+  Button {
+    margin: 1.5px;
+  }
 
   .added {
     position: absolute;

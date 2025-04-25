@@ -16,7 +16,7 @@ export interface LoginProps {
 
 const Login = () => {
   const nav = useNavigate();
-  const showAlert = useAlert();
+  const {showAlert} = useAlert();
 
   const {
     // isloggedIn,
@@ -75,7 +75,7 @@ const Login = () => {
             )}
           </fieldset>
           <fieldset>
-            <Button type="submit" size="small" scheme="primary">
+            <Button type="submit" size="medium" scheme="primary">
               로그인
             </Button>
           </fieldset>

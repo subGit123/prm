@@ -10,7 +10,7 @@ const Home = () => {
       <Title size="large" color="background">
         제목
       </Title>
-      <Button size="large" scheme="primary" disabled={true} isLoading={true}>
+      <Button size="large" scheme="primary" disabled={true} isloading={true}>
         버튼 테스트
       </Button>
       <InputText placeholder="여기에 입력하세요" />

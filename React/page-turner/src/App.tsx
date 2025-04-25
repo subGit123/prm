@@ -9,6 +9,9 @@ import ResetPassword from './pages/ResetPassword.tsx';
 import Login from './pages/Login.tsx';
 import Books from './pages/Books.tsx';
 import BookDetail from './pages/BookDetail.tsx';
+import Cart from './pages/Cart.tsx';
+import Order from './pages/Order.tsx';
+import OrderList from './pages/OrderList.tsx';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +60,30 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <BookDetail />
+      </Layout>
+    ),
+  },
+  {
+    path: '/cart',
+    element: (
+      <Layout>
+        <Cart />
+      </Layout>
+    ),
+  },
+  {
+    path: '/order',
+    element: (
+      <Layout>
+        <Order />
+      </Layout>
+    ),
+  },
+  {
+    path: '/orderList',
+    element: (
+      <Layout>
+        <OrderList />
       </Layout>
     ),
   },

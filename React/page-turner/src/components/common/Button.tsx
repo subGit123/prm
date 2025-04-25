@@ -6,7 +6,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size: ButtonSize;
   scheme: ButtonScheme;
   disabled?: boolean;
-  isLoading?: boolean;
+  isloading?: boolean;
 }
 
 const Button = ({
@@ -14,7 +14,7 @@ const Button = ({
   size,
   scheme,
   disabled,
-  isLoading,
+  isloading,
   ...rest // props를 한번에 넘기는 문법
 }: Props) => {
   return (
@@ -22,7 +22,7 @@ const Button = ({
       size={size}
       scheme={scheme}
       disabled={disabled}
-      isLoading={isLoading}
+      isloading={isloading}
       {...rest}>
       {children}
     </ButtonStyle>
