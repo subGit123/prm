@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Order, OrderListItem} from '../models/oder.model';
+import {OrderListItem} from '../models/oder.model';
 import {fetchOrderDetail, fetchOrders} from '../api/order.api';
 
 export const useOrders = () => {

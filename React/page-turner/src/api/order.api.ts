@@ -1,20 +1,19 @@
-import {Order, OrderDetailItem, OrderSheet} from '../models/oder.model';
-import {httpClient} from './http';
+import {OrderSheet} from '../models/oder.model';
+import {requestHandler} from './http';
+
+// export const order = async (orderData: OrderSheet) => {
+//   const res = await httpClient.post('/orders', orderData);
+//   return res.data;
+// };
 
 export const order = async (orderData: OrderSheet) => {
-  const res = await httpClient.post('/orders', orderData);
-
-  return res.data;
+  return requestHandler('post', '/orders', orderData);
 };
 
 export const fetchOrders = async () => {
-  const res = await httpClient.get<Order[]>('/orders');
-
-  return res.data;
+  return requestHandler('get', '/orders');
 };
 
 export const fetchOrderDetail = async (id: number) => {
-  const res = await httpClient.get<OrderDetailItem[]>(`/orders/${id}`);
-
-  return res.data;
+  return requestHandler('get', `/orders/${id}`);
 };
