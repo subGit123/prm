@@ -9,7 +9,7 @@ interface FetchBooksParams {
   currentPage?: number;
 }
 
-interface FetchRES {
+export interface FetchRES {
   books: Book[];
   pagination: Pagination;
 }

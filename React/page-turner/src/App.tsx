@@ -12,6 +12,8 @@ import BookDetail from './pages/BookDetail.tsx';
 import Cart from './pages/Cart.tsx';
 import Order from './pages/Order.tsx';
 import OrderList from './pages/OrderList.tsx';
+import {QueryClientProvider} from '@tanstack/react-query';
+import {queryClient} from './api/queryClient.ts';
 
 const routerList = [
   {
@@ -64,10 +66,12 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <PageTurnerThemeProvider>
-      <ThemeSwitcher />
-      <RouterProvider router={router} />
-    </PageTurnerThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <PageTurnerThemeProvider>
+        <ThemeSwitcher />
+        <RouterProvider router={router} />
+      </PageTurnerThemeProvider>
+    </QueryClientProvider>
   );
 }
 

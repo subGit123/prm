@@ -2,12 +2,10 @@ import styled from 'styled-components';
 import Title from '../components/common/Title';
 import InputText from '../components/common/InputText';
 import Button from '../components/common/Button';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {useForm} from 'react-hook-form';
-import {login} from '../api/auth.api';
-import useAlert from '../hooks/useAlert';
 import {SignupStyle} from './Signup';
-import {useAuthStore} from '../store/authStore';
+import {useAuth} from '@/hooks/useAuth';
 
 export interface LoginProps {
   email: string;
@@ -15,14 +13,7 @@ export interface LoginProps {
 }
 
 const Login = () => {
-  const nav = useNavigate();
-  const {showAlert} = useAlert();
-
-  const {
-    // isloggedIn,
-    storeLogin,
-    // storeLogout
-  } = useAuthStore();
+  const {userLogin} = useAuth();
 
   const {
     register,
@@ -31,18 +22,7 @@ const Login = () => {
   } = useForm<LoginProps>();
 
   const onSubmit = (data: LoginProps) => {
-    login(data).then(
-      res => {
-        // 상태 변화
-        storeLogin(res.token);
-
-        showAlert('로그인 성공!!');
-        nav('/');
-      },
-      () => {
-        showAlert('로그인 실패 ㅠㅠ');
-      },
-    );
+    userLogin(data);
   };
 
   return (

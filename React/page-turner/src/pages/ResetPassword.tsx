@@ -3,10 +3,8 @@ import InputText from '../components/common/InputText';
 import Button from '../components/common/Button';
 import {Link, useNavigate} from 'react-router-dom';
 import {useForm} from 'react-hook-form';
-import {resetPassword, resetRequest} from '../api/auth.api';
-import useAlert from '../hooks/useAlert';
 import {SignupStyle} from './Signup';
-import {useState} from 'react';
+import {useAuth} from '@/hooks/useAuth';
 
 export interface SignupProps {
   email: string;
@@ -14,9 +12,7 @@ export interface SignupProps {
 }
 
 const ResetPassword = () => {
-  const nav = useNavigate();
-  const {showAlert} = useAlert();
-  const [resetPWrq, setResetPWrq] = useState(false);
+  const {userResetPassword, resetPWrq, userResetRequest} = useAuth();
 
   const {
     register,
@@ -25,18 +21,7 @@ const ResetPassword = () => {
   } = useForm<SignupProps>();
 
   const onSubmit = (data: SignupProps) => {
-    if (resetPWrq) {
-      // 비밀번호 초기화
-      resetPassword(data).then(() => {
-        showAlert('비밀번호 초기화 되었습니다.');
-        nav('/login');
-      });
-    } else {
-      // 비밀번호 초기화 요청
-      resetRequest(data).then(() => {
-        setResetPWrq(true);
-      });
-    }
+    resetPWrq ? userResetPassword(data) : userResetRequest(data);
   };
 
   return (
