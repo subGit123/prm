@@ -1,3 +1,4 @@
+import React from 'react';
 import {useParams} from 'react-router-dom';
 import styled from 'styled-components';
 import {useBook} from '../hooks/useBookDetail';
@@ -6,9 +7,11 @@ import Title from '../components/common/Title';
 import {BookDetail as IBookDetail} from '../models/book.model';
 import {formatDate, formatNumber} from '../utils/Format';
 import {Link} from 'react-router-dom';
-// import ElipsisBox from '../components/common/ElipsisBox';
 import LikeButton from '../components/BookDetail/LikeButton';
 import AddToCart from '../components/BookDetail/AddToCart';
+import BookReview from '../components/BookDetail/BookReview';
+import ElipsisBox from '../components/common/ElipsisBox';
+import {Tabs, Tab} from '../components/common/Tabs';
 
 const bookInfoList = [
   {
@@ -50,7 +53,7 @@ const bookInfoList = [
 
 function BookDetail() {
   const {bookId} = useParams();
-  const {book, likeToggle} = useBook(Number(bookId));
+  const {book, likeToggle, reviews, addReview} = useBook(Number(bookId));
 
   if (!book) return null;
 
@@ -85,7 +88,22 @@ function BookDetail() {
           </div>
         </div>
       </header>
-      <div className="content"></div>
+      <div className="content">
+        <Tabs>
+          <Tab title="상세 설명">
+            <Title size="medium">상세 설명</Title>
+            <ElipsisBox linelimit={4}>{book.detail}</ElipsisBox>
+          </Tab>
+          <Tab title="목차">
+            <Title size="medium">목차</Title>
+            <p className="index">{book.contents}</p>
+          </Tab>
+          <Tab title="리뷰">
+            <Title size="medium">리뷰</Title>
+            <BookReview reviews={reviews} onAdd={addReview} />
+          </Tab>
+        </Tabs>
+      </div>
     </BookDetailStyle>
   );
 }

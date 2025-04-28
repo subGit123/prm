@@ -1,6 +1,5 @@
 import Home from './pages/Home';
 import Layout from './components/layout/Layout';
-import ThemeSwitcher from './components/header/ThemeSwitcher.tsx';
 import {PageTurnerThemeProvider} from './context/ThemeContext.tsx';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Error from './components/common/Error.tsx';
@@ -14,6 +13,8 @@ import Order from './pages/Order.tsx';
 import OrderList from './pages/OrderList.tsx';
 import {QueryClientProvider} from '@tanstack/react-query';
 import {queryClient} from './api/queryClient.ts';
+import React from 'react';
+import ToastContainer from './components/toast/ToastContainer.tsx';
 
 const routerList = [
   {
@@ -68,8 +69,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <PageTurnerThemeProvider>
-        <ThemeSwitcher />
         <RouterProvider router={router} />
+        <ToastContainer />
       </PageTurnerThemeProvider>
     </QueryClientProvider>
   );

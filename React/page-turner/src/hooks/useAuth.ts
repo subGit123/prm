@@ -1,9 +1,9 @@
-import {login, resetPassword, resetRequest, signup} from '@/api/auth.api';
-import {LoginProps} from '@/pages/Login';
-import {useAuthStore} from '@/store/authStore';
+import {login, resetPassword, resetRequest, signup} from '../api/auth.api';
+import {LoginProps} from '../pages/Login';
+import {useAuthStore} from '../store/authStore';
 import useAlert from './useAlert';
 import {useNavigate} from 'react-router-dom';
-import {SignupProps} from '@/pages/Signup';
+import {SignupProps} from '../pages/Signup';
 import {useState} from 'react';
 
 export const useAuth = () => {

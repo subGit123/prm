@@ -2,6 +2,7 @@ import {useState} from 'react';
 import styled from 'styled-components';
 import Button from './Button';
 import {FaAngleDown} from 'react-icons/fa';
+import React from 'react';
 
 interface Props {
   children: React.ReactNode;

@@ -6,7 +6,8 @@ import BookEmpty from '../components/Books/BookEmpty';
 import Pagination from '../components/Books/Pagination';
 import BookViewSwitcher from '../components/Books/BookViewSwitcher';
 import {useBooks} from '../hooks/useBooks';
-import Loading from '@/components/common/Loading';
+import Loading from '../components/common/Loading';
+import React from 'react';
 
 const Books = () => {
   const {books, pagination, isEmpty, isBooksLoading} = useBooks();
