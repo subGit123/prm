@@ -4,7 +4,7 @@ import {httpClient} from './http';
 
 interface FetchBooksParams {
   category_id?: number;
-  //   news?: boolean;
+  news?: boolean;
   limit: number;
   currentPage?: number;
 }
@@ -44,6 +44,12 @@ export const likeBook = async (bookId: number) => {
 
 export const unLikeBook = async (bookId: number) => {
   const res = await httpClient.delete(`/likes/book_likes/${bookId}`);
+
+  return res.data;
+};
+
+export const fetchBestBooks = async () => {
+  const res = await httpClient.get<Book[]>(`/books/best`);
 
   return res.data;
 };

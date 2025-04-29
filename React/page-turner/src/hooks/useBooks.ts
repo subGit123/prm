@@ -16,7 +16,7 @@ export const useBooks = () => {
         category_id: params.get(QUERYSTRING.CATEGORY_ID)
           ? Number(params.get(QUERYSTRING.CATEGORY_ID))
           : undefined,
-        // news: params.get(QUERYSTRING.NEWS) ? true : undefined,
+        news: params.get(QUERYSTRING.NEWS) ? true : undefined,
         limit: LIMIT,
         currentPage: params.get(QUERYSTRING.PAGE)
           ? Number(params.get(QUERYSTRING.PAGE))

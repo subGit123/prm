@@ -5,6 +5,7 @@ import {formatNumber} from '../../utils/Format';
 import {FaHeart} from 'react-icons/fa';
 import {ViewMode} from './BookViewSwitcher';
 import {Link} from 'react-router-dom';
+import React from 'react';
 
 interface Props {
   book: Book;
@@ -33,7 +34,7 @@ const BookItem = ({book, view}: Props) => {
   );
 };
 
-const BookItemStyle = styled.div<Pick<Props, 'view'>>`
+export const BookItemStyle = styled.div<Pick<Props, 'view'>>`
   a {
     display: flex;
     flex-direction: ${({view}) => (view === 'grid' ? 'column' : 'row')};

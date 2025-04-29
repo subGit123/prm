@@ -20,7 +20,7 @@ export const useBooksInfinite = () => {
 
     return await fetchBooks({
       category_id,
-      // news,
+      news,
       limit,
       currentPage,
     });
