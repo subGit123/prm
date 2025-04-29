@@ -26,6 +26,7 @@ export const Tabs = ({children}: TabsProps) => {
       <div className="tab-header">
         {tabs.map((tab, idx) => (
           <button
+            key={idx}
             onClick={() => setActiveIdx(idx)}
             className={activeIdx === idx ? 'active' : ''}>
             {tab.props.title}

@@ -3,6 +3,7 @@ import useCategory from '../../hooks/useCategory';
 import Button from '../common/Button';
 import {useSearchParams} from 'react-router-dom';
 import {QUERYSTRING} from '../../constants/querySting';
+import React from 'react';
 
 const Bookfilter = () => {
   const {category} = useCategory();
@@ -15,6 +16,7 @@ const Bookfilter = () => {
     } else {
       newParams.set(QUERYSTRING.CATEGORY_ID, id.toString());
     }
+
     setSearchParams(newParams);
   };
 

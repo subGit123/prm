@@ -10,28 +10,16 @@ const useCategory = () => {
   const [category, setCategory] = useState<Category[]>([]);
 
   // URL의 쿼리 파라미터를 기반으로 특정 카테고리를 활성화하는 함수
-  const setActive = () => {
+  const setActive = (categories: Category[]) => {
     const params = new URLSearchParams(location.search);
+    const categoryId = params.get('category_id');
 
-    if (params.get('category_id')) {
-      setCategory(prev => {
-        return prev.map(item => {
-          return {
-            ...item,
-            isActive: item.category_id === Number(params.get('category_id')),
-          };
-        });
-      });
-    } else {
-      setCategory(prev => {
-        return prev.map(item => {
-          return {
-            ...item,
-            isActive: false,
-          };
-        });
-      });
-    }
+    setCategory(() =>
+      categories.map(item => ({
+        ...item,
+        isActive: item.category_id === (categoryId ? Number(categoryId) : null),
+      })),
+    );
   };
 
   useEffect(() => {
@@ -43,12 +31,12 @@ const useCategory = () => {
         ...category,
       ];
       setCategory(categoryWithAll);
-      setActive();
+      setActive(categoryWithAll);
     });
   }, []);
 
   useEffect(() => {
-    setActive();
+    setActive(category);
   }, [location.search]);
 
   return {category};

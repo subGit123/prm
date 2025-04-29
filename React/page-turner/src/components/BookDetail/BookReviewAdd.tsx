@@ -23,7 +23,10 @@ const BookReviewAdd = ({onAdd}: Props) => {
     <BookReviewAddStyle>
       <form onSubmit={handleSubmit(onAdd)}>
         <fieldset>
-          <textarea {...register('content', {required: true})}>
+          <textarea
+            {...register('content', {required: true})}
+            key={onAdd.name}
+            value={onAdd.name}>
             리뷰 내용...
           </textarea>
           {errors.content && (
@@ -35,7 +38,9 @@ const BookReviewAdd = ({onAdd}: Props) => {
             <select
               {...register('score', {required: true, valueAsNumber: true})}>
               {optionNumber.map(number => (
-                <option value={number + 1}>{number + 1}점</option>
+                <option value={number + 1} key={number + 1}>
+                  {number + 1}점
+                </option>
               ))}
             </select>
             <Button size="medium" scheme="primary">

@@ -3,14 +3,32 @@ import Title from '../components/common/Title';
 import Bookfilter from '../components/Books/Bookfilter';
 import BooksList from '../components/Books/BooksList';
 import BookEmpty from '../components/Books/BookEmpty';
-import Pagination from '../components/Books/Pagination';
 import BookViewSwitcher from '../components/Books/BookViewSwitcher';
-import {useBooks} from '../hooks/useBooks';
 import Loading from '../components/common/Loading';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
+import {useBooksInfinite} from '../hooks/useBooksInfinite';
+import {useIntersectionObserver} from '../hooks/useIntersectionObserver';
 
 const Books = () => {
-  const {books, pagination, isEmpty, isBooksLoading} = useBooks();
+  const {
+    books,
+    pagination,
+    isEmpty,
+    isBooksLoading,
+    fetchNextPage,
+    hasNextPage,
+  } = useBooksInfinite();
+
+  const moreRef = useIntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      loadMore();
+    }
+  });
+
+  const loadMore = () => {
+    if (!hasNextPage) return;
+    fetchNextPage();
+  };
 
   if (isEmpty) {
     return <BookEmpty />;
@@ -30,7 +48,9 @@ const Books = () => {
         </div>
 
         <BooksList books={books} />
-        <Pagination pagination={pagination} />
+        {/* <Pagination pagination={pagination} /> */}
+
+        <div className="more" ref={moreRef}></div>
       </BookStyle>
     </>
   );

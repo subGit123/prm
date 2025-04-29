@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import styled from 'styled-components';
 import {useBook} from '../hooks/useBookDetail';
@@ -12,6 +12,7 @@ import AddToCart from '../components/BookDetail/AddToCart';
 import BookReview from '../components/BookDetail/BookReview';
 import ElipsisBox from '../components/common/ElipsisBox';
 import {Tabs, Tab} from '../components/common/Tabs';
+import {Modal} from '../components/common/Modal';
 
 const bookInfoList = [
   {
@@ -55,13 +56,18 @@ function BookDetail() {
   const {bookId} = useParams();
   const {book, likeToggle, reviews, addReview} = useBook(Number(bookId));
 
+  const [isOpen, setIsOpen] = useState(false);
+
   if (!book) return null;
 
   return (
     <BookDetailStyle>
       <header className="header">
-        <div className="img">
+        <div className="img" onClick={() => setIsOpen(true)}>
           <img src={getImgSrc(book.img)} alt={book.title} />
+          <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+            <img src={getImgSrc(book.img)} alt={book.title} />
+          </Modal>
         </div>
         <div className="info">
           <Title size="large" color="text">
