@@ -32,3 +32,9 @@ export const addReview = http.post(
     );
   },
 );
+
+export const reviewForMain = http.get('http://localhost:7777/reviews', () => {
+  return HttpResponse.json(reviewData, {
+    status: 200,
+  });
+});

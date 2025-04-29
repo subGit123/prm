@@ -25,6 +25,8 @@
 - tanstack-query : 서버 상태를 관리하는 라이브러리
 - msw : API 요청을 모킹하여 개발과 테스트를 용이하게 만들어 주는 라이브러리
 - faker-js : 가짜 데이터들을 사용하기 위함
+- Slick : 슬라이더 이미지를 구현하는 도움을 주는 라이브러리
+- react-slick-carousel : slick을 사용해서 만든 이미지 슬라이더
 
 ---
 

@@ -1,24 +1,21 @@
 import React from 'react';
-import Button from '../components/common/Button';
-import InputText from '../components/common/InputText';
-import Title from '../components/common/Title';
-import {formatNumber} from '../utils/Format';
-const num = 1000;
+import styled from 'styled-components';
+import MainReview from '../components/main/MainReview';
+import {useMain} from '../hooks/useMain';
 
 const Home = () => {
+  const {reviews} = useMain();
   return (
-    <>
-      <Title size="large" color="background">
-        제목
-      </Title>
-      <Button size="large" scheme="primary" disabled={true} isloading={true}>
-        버튼 테스트
-      </Button>
-      <InputText placeholder="여기에 입력하세요" />
-      <div>HOME</div>
-      <p>count : {formatNumber(num)}</p>
-    </>
+    <HomeStyle>
+      {/* 배네 */}
+      {/* 베스트 셀러 */}
+      {/* 신간 */}
+
+      <MainReview reviews={reviews} />
+    </HomeStyle>
   );
 };
+
+const HomeStyle = styled.div``;
 
 export default Home;
