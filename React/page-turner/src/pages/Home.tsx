@@ -5,12 +5,14 @@ import {useMain} from '../hooks/useMain';
 import Title from '../components/common/Title';
 import MainNewBooks from '../components/main/MainNewBooks';
 import MainBest from '../components/main/MainBest';
+import Banner from '../components/common/banner/Banner';
 
 const Home = () => {
-  const {reviews, newBooks, bestBooks} = useMain();
+  const {reviews, newBooks, bestBooks, banners} = useMain();
   return (
     <HomeStyle>
-      {/* 배네 */}
+      <Banner banners={banners} />
+
       <section className="section">
         <Title size="large">베스트 셀러</Title>
         <MainBest books={bestBooks} />

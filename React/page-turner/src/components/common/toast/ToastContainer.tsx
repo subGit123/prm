@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {useToastStore} from '../../store/toastStore';
+import {useToastStore} from '../../../store/toastStore';
 import Toast from './Toast';
 
 const ToastContainer = () => {

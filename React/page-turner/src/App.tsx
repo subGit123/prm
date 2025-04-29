@@ -14,7 +14,7 @@ import OrderList from './pages/OrderList.tsx';
 import {QueryClientProvider} from '@tanstack/react-query';
 import {queryClient} from './api/queryClient.ts';
 import React from 'react';
-import ToastContainer from './components/toast/ToastContainer.tsx';
+import ToastContainer from './components/common/toast/ToastContainer.tsx';
 
 const routerList = [
   {
