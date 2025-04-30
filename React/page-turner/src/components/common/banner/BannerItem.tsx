@@ -30,8 +30,10 @@ const BannerItemStyle = styled.div`
   position: relative;
 
   .img {
-    width: 100%;
-    max-width: 100%;
+    img {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 
   .content {
@@ -46,6 +48,11 @@ const BannerItemStyle = styled.div`
       rgba(255, 255, 255, 0)
     );
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     h2 {
       font-size: 2rem;
       font-weight: 700;
@@ -57,6 +64,25 @@ const BannerItemStyle = styled.div`
       font-size: 1.2rem;
       color: ${props => props.theme.color.text};
       margin: 0;
+    }
+  }
+
+  @media screen AND ${({theme}) => theme.mediaQuery.mobile} {
+    .content {
+      width: 100%;
+      background: linear-gradient(
+        to top,
+        rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0)
+      );
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+      p {
+        font-size: 0.75rem;
+      }
     }
   }
 `;

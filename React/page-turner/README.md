@@ -124,3 +124,9 @@ ThemeProvider : 테마를 애플리케이션에 적용하는 데 사용되는 �
     - useAuth 훅
 
 ---
+
+### 반응형웹 / 모바일 대응
+
+1. viewport
+2. 상개값을 가진 레이아웃
+3. 화면 너비 감지 (mediaquery)

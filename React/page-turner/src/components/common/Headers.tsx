@@ -1,37 +1,46 @@
 import {styled} from 'styled-components';
-import {FaRegUser, FaSignInAlt, FaUserCircle} from 'react-icons/fa';
+import {
+  FaAngleRight,
+  FaBars,
+  FaRegUser,
+  FaSignInAlt,
+  FaUserCircle,
+} from 'react-icons/fa';
 import {Link} from 'react-router-dom';
 import useCategory from '../../hooks/useCategory';
 import {useAuthStore} from '../../store/authStore';
-import React from 'react';
+import React, {useState} from 'react';
 import Dropdown from './Drowdown';
 import logo from '../../assets/images/logo.png';
 
 const Headers = () => {
   const {category} = useCategory();
-  const {
-    isloggedIn,
-    // storeLogin,
-    storeLogout,
-  } = useAuthStore();
+  const {isloggedIn, storeLogout} = useAuthStore();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
   return (
-    <HeaderStyle>
+    <HeaderStyle $isOpen={isMobileOpen}>
       <h1 className="logo">
         <Link to="/">
-          <img src={logo} alt="logo img" />
+          <img src={logo} alt="book store" />
         </Link>
       </h1>
       <nav className="category">
+        <button
+          className="menu-button"
+          onClick={() => setIsMobileOpen(!isMobileOpen)}>
+          {isMobileOpen ? <FaAngleRight /> : <FaBars />}
+        </button>
         <ul>
-          {category.map(category => (
-            <li key={category.category_id}>
+          {category.map(item => (
+            <li key={item.category_id}>
               <Link
                 to={
-                  category.category_id === null
+                  item.category_id === null
                     ? `/books`
-                    : `/books?category_id=${category.category_id}`
+                    : `/books?category_id=${item.category_id}`
                 }>
-                {category.category_name}
+                {item.category_name}
               </Link>
             </li>
           ))}
@@ -58,13 +67,13 @@ const Headers = () => {
                 <li>
                   <Link to="/login">
                     <FaSignInAlt />
-                    Login
+                    로그인
                   </Link>
                 </li>
                 <li>
-                  <Link to="/signUp">
+                  <Link to="/signup">
                     <FaRegUser />
-                    Sign Up
+                    회원가입
                   </Link>
                 </li>
               </ul>
@@ -76,7 +85,11 @@ const Headers = () => {
   );
 };
 
-const HeaderStyle = styled.header`
+interface HeaderStyleProps {
+  $isOpen: boolean;
+}
+
+const HeaderStyle = styled.header<HeaderStyleProps>`
   width: 100%;
   margin: 0 auto;
   max-width: ${({theme}) => theme.layout.width.large};
@@ -94,6 +107,9 @@ const HeaderStyle = styled.header`
   }
 
   .category {
+    .menu-button {
+      display: none;
+    }
     ul {
       display: flex;
       gap: 32px;
@@ -103,9 +119,8 @@ const HeaderStyle = styled.header`
           font-weight: 600;
           text-decoration: none;
           color: ${({theme}) => theme.color.text};
-
           &:hover {
-            color: ${({theme}) => theme.color.background};
+            color: ${({theme}) => theme.color.primary};
           }
         }
       }
@@ -118,7 +133,6 @@ const HeaderStyle = styled.header`
       flex-direction: column;
       gap: 16px;
       width: 100px;
-
       li {
         a,
         button {
@@ -132,12 +146,60 @@ const HeaderStyle = styled.header`
           line-height: 1;
           background: none;
           border: 0;
-          cursor: 'pointer';
+          cursor: pointer;
 
           svg {
-            margin-right: 3px;
+            margin-right: 6px;
           }
         }
+      }
+    }
+  }
+
+  @media screen AND ${({theme}) => theme.mediaQuery.mobile} {
+    height: 95px;
+    .logo {
+      padding: 0 0 0 8px;
+
+      img {
+        width: 125px;
+        /* height: 46px; */
+      }
+    }
+
+    .auth {
+      position: absolute;
+      top: 32px;
+      right: 12px;
+    }
+
+    .category {
+      .menu-button {
+        display: flex;
+        position: absolute;
+        top: 34px;
+        right: ${({$isOpen}) => ($isOpen ? '62%' : '52px')};
+        background: #fff;
+        border: 0;
+        font-size: 1.5rem;
+      }
+
+      ul {
+        position: fixed;
+        top: 0;
+        right: ${({$isOpen}) => ($isOpen ? '0' : '-100%')};
+        width: 60%;
+        height: 100vh;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        transition: right 0.3s ease-in-out;
+
+        margin: 0;
+        padding: 24px;
+        z-index: 1000;
+
+        flex-direction: column;
+        gap: 16px;
       }
     }
   }

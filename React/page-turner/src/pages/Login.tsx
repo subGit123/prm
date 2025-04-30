@@ -36,8 +36,7 @@ const Login = () => {
               placeholder="이메일"
               inputType="email"
               {...register('email', {required: true})}
-              // value={email}
-              // onChange={e => setEmail(e.target.value)}
+              inputMode="email"
             />
             {errors.email && (
               <p className="error-text">이메일을 입력해주세요.</p>
@@ -47,9 +46,8 @@ const Login = () => {
             <InputText
               placeholder="비밀번호"
               inputType="password"
-              // value={password}
-              // onChange={e => setPassword(e.target.value)}
               {...register('password', {required: true})}
+              inputMode="text"
             />
             {errors.password && (
               <p className="error-text">비밀번호를 입력해주세요.</p>

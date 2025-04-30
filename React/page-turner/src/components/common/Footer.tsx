@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import logo from '../../assets/images/logo.png';
+import React from 'react';
 
 const Footer = () => {
   return (
@@ -36,6 +37,11 @@ const FooterStyle = styled.footer`
       font-size: 0.75rem;
       color: ${({theme}) => theme.color.text};
     }
+  }
+
+  @media screen and ${({theme}) => theme.mediaQuery.mobile} {
+    flex-direction: column;
+    align-items: center;
   }
 `;
 

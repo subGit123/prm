@@ -31,16 +31,16 @@ const Banner = ({banners}: Props) => {
   return (
     <BannerStyle>
       <BannerContainerStyle $transFormValue={transFormValue}>
-        {banners.map((item, idx) => (
+        {banners.map(item => (
           <BannerItem banner={item} />
         ))}
       </BannerContainerStyle>
 
       <BannerButtonStyle>
-        <button onClick={handlePrev}>
+        <button onClick={handlePrev} className="prev">
           <FaAngleLeft />
         </button>
-        <button onClick={handleNext}>
+        <button onClick={handleNext} className="next">
           <FaAngleRight />
         </button>
       </BannerButtonStyle>
@@ -91,12 +91,25 @@ const BannerButtonStyle = styled.div`
       fill: #fff;
     }
 
-    &.precv {
+    &.prev {
       left: 10px;
     }
 
     &.next {
       right: 10px;
+    }
+
+    @media screen AND ${({theme}) => theme.mediaQuery.mobile} {
+      width: 28px;
+      height: 28px;
+      font-size: 1.5rem;
+
+      &.prev {
+        left: 0;
+      }
+      &.next {
+        right: 0;
+      }
     }
   }
 `;
@@ -109,8 +122,8 @@ const BannerIndicatorStyle = styled.div`
 
   span {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
     border-radius: 100px;
     background: #fff;
     margin: 0 4px;
@@ -118,6 +131,18 @@ const BannerIndicatorStyle = styled.div`
 
     &.active {
       background: ${({theme}) => theme.color.primary};
+    }
+  }
+
+  @media screen AND ${({theme}) => theme.mediaQuery.mobile} {
+    bottom: 0;
+    span {
+      width: 11px;
+      height: 11px;
+
+      &.active {
+        width: 24px;
+      }
     }
   }
 `;
